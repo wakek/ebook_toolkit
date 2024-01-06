@@ -1,22 +1,13 @@
-# epubx
+# ebook_toolkit
 
-It package is [dart-epub](https://github.com/orthros/dart-epub) fork
+A fork of [ebook_toolkit](https://github.com/orthros/dart-epub) which is itself a fork of [dart-epub](https://github.com/ScerIO/ebook_toolkit.dart).
 
-[Flutter UI implementation](https://pub.dev/packages/epub_view)
+The [dart-epub] project is "an Epub Reader and Writer for Dart inspired by [this fantastic C# Epub Reader](https://github.com/versfx/EpubReader)"
 
-Epub Reader and Writer for Dart inspired by [this fantastic C# Epub Reader](https://github.com/versfx/EpubReader)
+This fork has started out as reader/writer for epub files.
+However, it will likely grow to accommodate other formats such as pdfs, mobi and others, if possible.
 
-This does not rely on the ```dart:io``` package in any way, so it is avilable for both desktop and web-based implementations
-
-[![pub package](https://img.shields.io/pub/v/epubx.svg)](https://pub.dartlang.org/packages/epubx)
-## Installing
-Add the package to the ```dependencies``` section of your pubspec.yaml
-```
-dependencies:
-  epubx: any
-```
-
-## Example
+## EPUB Example
 ```dart
 
 //Get the epub into memory somehow
@@ -28,7 +19,7 @@ List<int> bytes = await targetFile.readAsBytes();
 
 // Opens a book and reads all of its content into memory
 EpubBook epubBook = await EpubReader.readBook(bytes);
-            
+
 // COMMON PROPERTIES
 
 // Book's title
@@ -43,28 +34,28 @@ List<String> authors = epubBook.AuthorList;
 // Book's cover image (null if there is no cover)
 Image coverImage = epubBook.CoverImage;
 
-            
+
 // CHAPTERS
 
 // Enumerating chapters
 epubBook.Chapters.forEach((EpubChapter chapter) {
-  // Title of chapter
-  String chapterTitle = chapter.Title;
-              
-  // HTML content of current chapter
-  String chapterHtmlContent = chapter.HtmlContent;
+// Title of chapter
+String chapterTitle = chapter.Title;
 
-  // Nested chapters
-  List<EpubChapter> subChapters = chapter.SubChapters;
+// HTML content of current chapter
+String chapterHtmlContent = chapter.HtmlContent;
+
+// Nested chapters
+List<EpubChapter> subChapters = chapter.SubChapters;
 });
 
-            
+
 // CONTENT
 
 // Book's content (HTML files, stylesheets, images, fonts, etc.)
 EpubContent bookContent = epubBook.Content;
 
-            
+
 // IMAGES
 
 // All images in the book (file name is the key)
@@ -88,12 +79,12 @@ Map<String, EpubTextContentFile> cssFiles = bookContent.Css;
 
 // Entire HTML content of the book
 htmlFiles.values.forEach((EpubTextContentFile htmlFile) {
-  String htmlContent = htmlFile.Content;
+String htmlContent = htmlFile.Content;
 });
 
 // All CSS content in the book
 cssFiles.values.forEach((EpubTextContentFile cssFile){
-  String cssContent = cssFile.Content;
+String cssContent = cssFile.Content;
 });
 
 
@@ -113,8 +104,8 @@ EpubPackage package = epubBook.Schema.Package;
 
 // Enumerating book's contributors
 package.Metadata.Contributors.forEach((EpubMetadataContributor contributor){
-  String contributorName = contributor.Contributor;
-  String contributorRole = contributor.Role;
+String contributorName = contributor.Contributor;
+String contributorRole = contributor.Role;
 });
 
 // EPUB NCX data
@@ -122,8 +113,8 @@ EpubNavigation navigation = epubBook.Schema.Navigation;
 
 // Enumerating NCX metadata
 navigation.Head.Metadata.forEach((EpubNavigationHeadMeta meta){
-  String metadataItemName = meta.Name;
-  String metadataItemContent = meta.Content;
+String metadataItemName = meta.Name;
+String metadataItemContent = meta.Content;
 });
 
 // Writing Data

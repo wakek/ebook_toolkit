@@ -5,7 +5,7 @@ import 'dart:io' as io;
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
-import 'package:epubx/epubx.dart';
+import 'package:ebook_toolkit/ebook_toolkit.dart';
 
 main() async {
   String fileName = "MY VAMPIRE SYSTEM (JKSManga) (Z-Library).epub";
