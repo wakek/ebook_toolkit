@@ -1,11 +1,12 @@
-import 'package:archive/archive.dart';
 import 'dart:convert' as convert;
-import 'package:ebook_toolkit/src/utils/zip_path_utils.dart';
-import 'package:ebook_toolkit/src/writers/epub_package_writer.dart';
 
-import 'entities/epub_book.dart';
-import 'entities/epub_byte_content_file.dart';
-import 'entities/epub_text_content_file.dart';
+import 'package:archive/archive.dart';
+import 'package:ebook_toolkit/src/epub/writers/epub_package_writer.dart';
+import 'package:ebook_toolkit/src/utils/zip_path_utils.dart';
+
+import 'epub/entities/epub_book.dart';
+import 'epub/entities/epub_byte_content_file.dart';
+import 'epub/entities/epub_text_content_file.dart';
 
 class EpubWriter {
   static const _container_file =

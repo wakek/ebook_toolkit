@@ -5,8 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:quiver/core.dart';
 
+import '../../utils/zip_path_utils.dart';
 import '../entities/epub_content_type.dart';
-import '../utils/zip_path_utils.dart';
 import 'epub_book_ref.dart';
 
 abstract class EpubContentFileRef {
