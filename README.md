@@ -7,6 +7,8 @@ The [dart-epub] project is "an Epub Reader and Writer for Dart inspired by [this
 This fork has started out as reader/writer for epub files.
 However, it will likely grow to accommodate other formats such as pdfs, mobi and others, if possible.
 
+The PDF reader implementation is inspired by [flutter_pdf_render](https://github.dev/espresso3389/flutter_pdf_render)
+
 ## EPUB Example
 ```dart
 

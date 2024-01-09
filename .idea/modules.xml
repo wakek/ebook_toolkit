@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ebook_toolkit.iml" filepath="$PROJECT_DIR$/.idea/ebook_toolkit.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/ebook_toolkit_android.iml" filepath="$PROJECT_DIR$/android/ebook_toolkit_android.iml" />
     </modules>
   </component>
 </project>
