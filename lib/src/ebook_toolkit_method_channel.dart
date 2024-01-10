@@ -1,41 +1,60 @@
-import 'package:ebook_toolkit/src/pdf/entities/PDFDocument.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+
+import 'package:ebook_toolkit/src/pdf/entities/PdfDocument.dart';
+import 'package:ebook_toolkit/src/pdf/entities/PdfPage.dart';
 import 'package:flutter/services.dart';
 
 import 'ebook_toolkit_platform_interface.dart';
 
 const MethodChannel methodChannel = MethodChannel('ebook_toolkit');
 
-
 /// An implementation of [EbookToolkitPlatform] that uses method channels.
 class MethodChannelEbookToolkit extends EbookToolkitPlatform {
-
-  PDFDocument _open(Map<dynamic, dynamic> map, String sourceName) {
-    return PDFDocument._(
+  PdfDocument _open(Map<dynamic, dynamic> map, String sourceName) {
+    return PdfDocument(
+      id: map['documentId'] as int,
       sourceName: sourceName,
-      docId: map['docId'] as int,
       pageCount: map['pageCount'] as int,
       verMajor: map['verMajor'] as int,
       verMinor: map['verMinor'] as int,
-      isEncrypted: map['isEncrypted'] as bool,
-      allowsCopying: map['allowsCopying'] as bool,
-      allowsPrinting: map['allowsPrinting'] as bool,
-      //isUnlocked: obj['isUnlocked'] as bool
     );
   }
 
   @override
-  Future<PDFDocument> openAsset(String name) {
-    return _open(await methodChannel.invokeMethod('file', filePath), filePath);
+  Future<PdfDocument> openFromPath(String filePath) async {
+    return _open(
+      await methodChannel.invokeMethod('openPdfFromFilePath', filePath),
+      filePath,
+    );
   }
 
   @override
-  Future<PDFDocument> openFromMemory(Uint8List data) {
-    return _open(await methodChannel.invokeMethod('asset', name), 'asset:$name');
+  Future<PdfDocument> openAsset(String assetName) async {
+    return _open(
+      await methodChannel.invokeMethod('openAssetPdf', assetName),
+      'asset:$assetName',
+    );
   }
 
   @override
-  Future<PDFDocument> openFromPath(String filePath) {
-    return _open(await methodChannel.invokeMethod('data', data), 'memory:');
+  Future<PdfDocument> openFromMemory(Uint8List data) async {
+    return _open(
+      await methodChannel.invokeMethod('openPdfFromMemory', data),
+      'memory:${data.hashCode}',
+    );
+  }
+
+  @override
+  Future<PdfPageImageTexture> createTexture({
+    required FutureOr<PdfDocument> pdfDocument,
+    required int pageIndex,
+  }) async {
+    final texId = await methodChannel.invokeMethod<int>('allocTex');
+
+    return PdfPageImageTexture(
+      pdfDocument: await pdfDocument,
+      pageIndex: pageIndex,
+      texId: texId!,
+    );
   }
 }

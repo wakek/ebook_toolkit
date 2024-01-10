@@ -1,13 +1,10 @@
 # ebook_toolkit
 
-A fork of [ebook_toolkit](https://github.com/orthros/dart-epub) which is itself a fork of [dart-epub](https://github.com/ScerIO/ebook_toolkit.dart).
+This project provides tools to parse, read, render, or write multiple ebook file types in flutter/dart.
 
-The [dart-epub] project is "an Epub Reader and Writer for Dart inspired by [this fantastic C# Epub Reader](https://github.com/versfx/EpubReader)"
-
-This fork has started out as reader/writer for epub files.
-However, it will likely grow to accommodate other formats such as pdfs, mobi and others, if possible.
-
-The PDF reader implementation is inspired by [flutter_pdf_render](https://github.dev/espresso3389/flutter_pdf_render)
+Below are a list of attributions to the projects that are part of the foundation of ebook_toolkit:
+- EPUB: Ebook_toolkit started as a fork of [ebook_toolkit](https://github.com/orthros/dart-epub) which is itself a fork of [dart-epub](https://github.com/ScerIO/ebook_toolkit.dart). The [dart-epub] project is "an Epub Reader and Writer for Dart inspired by [this fantastic C# Epub Reader](https://github.com/versfx/EpubReader)"
+- PDF: The PDF reader implementation in this plugin is heavily inspired by [flutter_pdf_render](https://github.dev/espresso3389/flutter_pdf_render).
 
 ## EPUB Example
 ```dart

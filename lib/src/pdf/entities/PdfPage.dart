@@ -4,10 +4,12 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:ebook_toolkit/src/ebook_toolkit_method_channel.dart';
-import 'package:ebook_toolkit/src/pdf/entities/PDFDocument.dart';
+import 'package:ebook_toolkit/src/ebook_toolkit_platform_interface.dart';
+import 'package:ebook_toolkit/src/pdf/entities/PdfDocument.dart';
+import 'package:flutter/material.dart' as flutter_material;
 
-class PDFPage {
-  final PDFDocument document;
+class PdfPage {
+  final PdfDocument document;
 
   final int pageIndex;
 
@@ -17,7 +19,7 @@ class PDFPage {
   /// The page height in points (1/72").
   final double height;
 
-  PDFPage({
+  PdfPage({
     required this.document,
     required this.pageIndex,
     required this.width,
@@ -26,7 +28,7 @@ class PDFPage {
 
   @override
   bool operator ==(dynamic other) =>
-      other is PDFPage &&
+      other is PdfPage &&
       other.document == document &&
       other.pageIndex == pageIndex;
 
@@ -136,7 +138,7 @@ class PDFPageImage {
       await _decodeRgba(width, height, _pixels);
 
   static Future<PDFPageImage> _render(
-    PDFDocument document,
+    PdfDocument document,
     int pageNumber, {
     int? x,
     int? y,
@@ -149,7 +151,7 @@ class PDFPageImage {
   }) async {
     final obj =
         (await methodChannel.invokeMethod<Map<dynamic, dynamic>>('render', {
-      'docId': document.id,
+      'documentId': document.id,
       'pageNumber': pageNumber,
       'x': x,
       'y': y,
@@ -197,4 +199,84 @@ class PDFPageImage {
     );
     return comp.future;
   }
+}
+
+/// Very limited support for Flutter's [flutter_material.Texture] based drawing.
+/// Because it does not transfer the rendered image via platform channel,
+/// it could be faster and more efficient than the [PDFPageImage] based rendering process.
+class PdfPageImageTexture {
+  final PdfDocument pdfDocument;
+  final int pageIndex;
+  final int texId;
+
+  int? _texWidth;
+  int? _texHeight;
+
+  PdfPageImageTexture({
+    required this.pdfDocument,
+    required this.pageIndex,
+    required this.texId,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    return other is PdfPageImageTexture &&
+        other.pdfDocument == pdfDocument &&
+        other.pageIndex == pageIndex;
+  }
+
+  @override
+  int get hashCode => _document.id ^ pageIndex;
+
+  int? get texWidth => _texWidth;
+
+  int? get texHeight => _texHeight;
+
+  bool get hasUpdatedTexture => _texWidth != null;
+
+  PdfDocument get _document => pdfDocument;
+
+  /// Create a new Flutter [Texture]. The object should be released by calling [dispose] method after use it.
+  static Future<PdfPageImageTexture> create({
+    required FutureOr<PdfDocument> pdfDocument,
+    required int pageIndex,
+  }) =>
+      EbookToolkitPlatform.instance
+          .createTexture(pdfDocument: pdfDocument, pageIndex: pageIndex);
+
+  /// Extract sub-rectangle ([x],[y],[width],[height]) of the PDF page scaled to [fullWidth] x [fullHeight] size.
+  /// If [backgroundFill] is true, the sub-rectangle is filled with white before rendering the page content.
+  /// Returns true if succeeded.
+  /// Returns true if succeeded.
+  Future<bool> extractSubrect(
+      {int x = 0,
+      int y = 0,
+      required int width,
+      required int height,
+      double? fullWidth,
+      double? fullHeight,
+      bool backgroundFill = true,
+      bool allowAntialiasingIOS = true}) async {
+    final result = (await methodChannel.invokeMethod<int>('updateTexture', {
+      'docId': _document.id,
+      'pageIndex': pageIndex,
+      'texId': texId,
+      'width': width,
+      'height': height,
+      'srcX': x,
+      'srcY': y,
+      'fullWidth': fullWidth,
+      'fullHeight': fullHeight,
+      'backgroundFill': backgroundFill,
+      'allowAntialiasingIOS': allowAntialiasingIOS,
+    }))!;
+    if (result >= 0) {
+      _texWidth = width;
+      _texHeight = height;
+    }
+    return result >= 0;
+  }
+
+  /// Release the object.
+  Future<void> dispose() => methodChannel.invokeMethod('releaseTexture', texId);
 }
