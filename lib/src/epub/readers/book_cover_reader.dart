@@ -42,6 +42,6 @@ class BookCoverReader {
     final coverImageContent =
         await coverImageContentFileRef!.readContentAsBytes();
 
-    return decodePng(Uint8List.fromList(coverImageContent));
+    return decodeImage(Uint8List.fromList(coverImageContent));
   }
 }
