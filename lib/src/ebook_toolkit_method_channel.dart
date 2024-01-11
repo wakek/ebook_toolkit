@@ -49,12 +49,12 @@ class MethodChannelEbookToolkit extends EbookToolkitPlatform {
     required FutureOr<PdfDocument> pdfDocument,
     required int pageIndex,
   }) async {
-    final texId = await methodChannel.invokeMethod<int>('allocTex');
+    final textureId = await methodChannel.invokeMethod<int>('allocTexture');
 
     return PdfPageImageTexture(
       pdfDocument: await pdfDocument,
       pageIndex: pageIndex,
-      texId: texId!,
+      texId: textureId!,
     );
   }
 }
