@@ -188,7 +188,7 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
         val pageIndex = args["pageIndex"] as? Int ?: return null
         if (pageIndex < 0 || pageIndex >= renderer.pageCount) return null
 
-        renderer.openPage(pageIndex - 1).use {
+        renderer.openPage(pageIndex).use {
             return hashMapOf(
                 "documentId" to documentId,
                 "pageIndex" to pageIndex,
