@@ -139,7 +139,7 @@ class PDFPageImage {
 
   static Future<PDFPageImage> _render(
     PdfDocument document,
-    int pageNumber, {
+    int pageIndex, {
     int? x,
     int? y,
     int? width,
@@ -152,7 +152,7 @@ class PDFPageImage {
     final obj =
         (await methodChannel.invokeMethod<Map<dynamic, dynamic>>('render', {
       'documentId': document.id,
-      'pageNumber': pageNumber,
+      'pageIndex': pageIndex,
       'x': x,
       'y': y,
       'width': width,
@@ -174,7 +174,7 @@ class PDFPageImage {
         }();
 
     return PDFPageImage(
-        pageIndex: obj['pageNumber'] as int,
+        pageIndex: obj['pageIndex'] as int,
         x: obj['x'] as int,
         y: obj['y'] as int,
         width: retWidth,
