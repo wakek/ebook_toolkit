@@ -52,7 +52,7 @@ class PdfDocument {
 
     var map = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
       'getPageInfo',
-      {'docId': id, 'pageIndex': pageIndex},
+      {'documentId': id, 'pageIndex': pageIndex},
     ))!;
 
     page = PdfPage(

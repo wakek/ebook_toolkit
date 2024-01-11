@@ -258,7 +258,7 @@ class PdfPageImageTexture {
       bool backgroundFill = true,
       bool allowAntialiasingIOS = true}) async {
     final result = (await methodChannel.invokeMethod<int>('updateTexture', {
-      'docId': _document.id,
+      'documentId': _document.id,
       'pageIndex': pageIndex,
       'texId': texId,
       'width': width,
