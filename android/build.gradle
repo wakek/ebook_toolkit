@@ -45,6 +45,12 @@ android {
         test.java.srcDirs += 'src/test/kotlin'
     }
 
+    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }
+
     defaultConfig {
         minSdkVersion 21
     }
