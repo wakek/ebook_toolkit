@@ -185,12 +185,12 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
     private fun getPageInfo(args: HashMap<String, Any>): HashMap<String, Any>? {
         val documentId = args["documentId"] as? Int ?: return null
         val renderer = documents[documentId] ?: return null
-        val pageNumber = args["pageNumber"] as? Int ?: return null
-        if (pageNumber < 1 || pageNumber > renderer.pageCount) return null
-        renderer.openPage(pageNumber - 1).use {
+        val pageIndex = args["pageIndex"] as? Int ?: return null
+        if (pageIndex < 0 || pageIndex >= renderer.pageCount) return null
+        renderer.openPage(pageIndex - 1).use {
             return hashMapOf(
                 "documentId" to documentId,
-                "pageNumber" to pageNumber,
+                "pageIndex" to pageIndex,
                 "width" to it.width.toDouble(),
                 "height" to it.height.toDouble()
             )
@@ -203,8 +203,8 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
     ): HashMap<String, Any?> {
         val documentId = args["documentId"] as Int
         val renderer = documents[documentId]
-        val pageNumber = args["pageNumber"] as Int
-        renderer.openPage(pageNumber - 1).use {
+        val pageIndex = args["pageIndex"] as Int
+        renderer.openPage(pageIndex).use {
             val x = args["x"] as? Int? ?: 0
             val y = args["y"] as? Int? ?: 0
             val width = args["width"] as? Int? ?: 0
@@ -247,7 +247,7 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
 
             return hashMapOf(
                 "documentId" to documentId,
-                "pageNumber" to pageNumber,
+                "pageIndex" to pageIndex,
                 "x" to x,
                 "y" to y,
                 "width" to w,
@@ -305,12 +305,12 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
     private fun updateTexture(args: HashMap<String, Any>): Int {
         val texId = args["texId"] as Int
         val documentId = args["documentId"] as Int
-        val pageNumber = args["pageNumber"] as Int
+        val pageIndex = args["pageIndex"] as Int
         val tex = textures[texId] ?: return -8
 
         val renderer = documents[documentId]
 
-        renderer.openPage(pageNumber - 1).use { page ->
+        renderer.openPage(pageIndex).use { page ->
             val fullWidth = args["fullWidth"] as? Double ?: page.width.toDouble()
             val fullHeight = args["fullHeight"] as? Double ?: page.height.toDouble()
             val width = args["width"] as? Int ?: 0

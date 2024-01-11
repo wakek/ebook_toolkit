@@ -41,7 +41,7 @@ class PdfDocument {
       EbookToolkitPlatform.instance.openFromMemory(data);
 
   Future<PdfPage> getPage(int pageIndex) async {
-    if (pageIndex < 0 || pageIndex > pageIndex) {
+    if (pageIndex < 0 || pageIndex >= pageCount) {
       throw RangeError.range(pageIndex, 1, pageIndex, 'pageIndex');
     }
     var page = pages[pageIndex];
@@ -51,7 +51,7 @@ class PdfDocument {
     }
 
     var map = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
-      'getPage',
+      'getPageInfo',
       {'docId': id, 'pageIndex': pageIndex},
     ))!;
 
