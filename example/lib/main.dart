@@ -349,6 +349,17 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
       Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
+      Text(
+        "PageList",
+        style: TextStyle(fontSize: 20.0),
+      ),
+      Text(
+        'PageList: ${book.Schema?.Navigation?.PageList?.Targets?.length}',
+        style: TextStyle(fontSize: 15.0),
+      ),
+      Padding(
+        padding: EdgeInsets.only(top: 15.0),
+      ),
       FutureBuilder<List<epub.EpubChapterRef>>(
           future: chapters,
           builder: (context, snapshot) {
