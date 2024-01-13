@@ -120,11 +120,13 @@ class NavigationReader {
 
       var navMap = readNavigationMap(navMapNode);
       result.NavMap = navMap;
+
       var pageListNode = ncxNode
           .findElements('pageList', namespace: ncxNamespace)
           .cast<xml.XmlElement?>()
           .firstWhere((xml.XmlElement? elem) => elem != null,
               orElse: () => null);
+
       if (pageListNode != null) {
         var pageList = readNavigationPageList(pageListNode);
         result.PageList = pageList;
@@ -198,15 +200,14 @@ class NavigationReader {
       var navMap = readNavigationMapV3(navMapNode);
       result.NavMap = navMap;
 
-      //TODO : Implement pagesLists
-//      xml.XmlElement pageListNode = ncxNode
-//          .findElements("pageList", namespace: ncxNamespace)
-//          .firstWhere((xml.XmlElement elem) => elem != null,
-//          orElse: () => null);
-//      if (pageListNode != null) {
-//        EpubNavigationPageList pageList = readNavigationPageList(pageListNode);
-//        result.PageList = pageList;
-//      }
+      final pageListNode = containerDocument
+          .findAllElements('nav')
+          .where((element) => element.getAttribute('epub:type') == 'page-list')
+          .firstOrNull;
+      if (pageListNode != null) {
+        var pageList = readNavigationPageListEpubV3(pageListNode);
+        result.PageList = pageList;
+      }
     }
 
     return result;
@@ -435,13 +436,38 @@ class NavigationReader {
       xml.XmlElement navigationPageListNode) {
     var result = EpubNavigationPageList();
     result.Targets = <EpubNavigationPageTarget>[];
-    navigationPageListNode.children
+    navigationPageListNode.descendantElements
         .whereType<xml.XmlElement>()
         .forEach((xml.XmlElement pageTargetNode) {
       if (pageTargetNode.name.local == 'pageTarget') {
         var pageTarget = readNavigationPageTarget(pageTargetNode);
         result.Targets!.add(pageTarget);
       }
+    });
+
+    return result;
+  }
+
+  static EpubNavigationPageList readNavigationPageListEpubV3(
+      xml.XmlElement navigationPageListNode) {
+    var result = EpubNavigationPageList();
+    result.Targets = <EpubNavigationPageTarget>[];
+
+    final liElements = navigationPageListNode.findAllElements('li');
+    for (final liElement in liElements) {
+      final aElement = liElement.findElements('a').first;
+      final text = aElement.value ?? aElement.innerText;
+
+      final pageTarget = EpubNavigationPageTarget();
+      pageTarget.Value = text;
+      pageTarget.Id = text;
+      result.Targets!.add(pageTarget);
+    }
+
+    navigationPageListNode.descendantElements
+        .whereType<xml.XmlElement>()
+        .forEach((xml.XmlElement pageTargetNode) {
+      if (pageTargetNode.name.local == 'pageTarget') {}
     });
 
     return result;
