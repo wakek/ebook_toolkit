@@ -18,6 +18,7 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.view.TextureRegistry
+import kotlinx.coroutines.*
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -47,6 +48,7 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
         channel.setMethodCallHandler(null)
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onMethodCall(call: MethodCall, result: Result) {
         try {
             when (call.method) {
@@ -90,7 +92,9 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
                 }
                 "render" -> {
                     @Suppress("UNCHECKED_CAST")
-                    render(call.arguments as HashMap<String, Any>, result)
+                    GlobalScope.launch(Dispatchers.Default) {
+                        render(call.arguments as HashMap<String, Any>, result)
+                    }
                 }
                 "releaseBuffer" -> {
                     releaseBuffer(call.arguments as Long)
@@ -198,10 +202,10 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun renderOnByteBuffer(
+    private suspend fun renderOnByteBuffer(
         args: HashMap<String, Any>,
         createBuffer: (Int) -> ByteBuffer
-    ): HashMap<String, Any?> {
+    ): HashMap<String, Any?> = withContext(Dispatchers.Default) {
         val documentId = args["documentId"] as Int
         val renderer = documents[documentId]
         val pageIndex = args["pageIndex"] as Int
@@ -246,7 +250,7 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
             bmp.copyPixelsToBuffer(buf)
             bmp.recycle()
 
-            return hashMapOf(
+            return@withContext hashMapOf(
                 "documentId" to documentId,
                 "pageIndex" to pageIndex,
                 "x" to x,
@@ -261,23 +265,31 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
-    private fun render(args: HashMap<String, Any>, result: Result) {
+    private suspend fun render(args: HashMap<String, Any>, result: Result) {
         var buf: ByteBuffer? = null
         var addr = 0L
-        val m: HashMap<String, Any?> = renderOnByteBuffer(args) {
-            val (addr_, bbuf) = allocBuffer(it)
-            buf = bbuf
-            addr = addr_
-            return@renderOnByteBuffer bbuf
-        }
-        if (addr != 0L) {
-            m["addr"] = addr
-        } else {
-            m["data"] = buf?.array()
-        }
-        m["size"] = buf?.capacity()
+        var map: HashMap<String, Any?>
 
-        result.success(m)
+        coroutineScope {
+            val deferredMap: Deferred<HashMap<String, Any?>> = async(Dispatchers.Default) {
+                renderOnByteBuffer(args) {
+                    val (addr_, bbuf) = allocBuffer(it)
+                    buf = bbuf
+                    addr = addr_
+                    return@renderOnByteBuffer bbuf
+                }
+            }
+            map = deferredMap.await()
+        }
+
+        if (addr != 0L) {
+            map["addr"] = addr
+        } else {
+            map["data"] = buf?.array()
+        }
+        map["size"] = buf?.capacity()
+
+        result.success(map)
     }
 
     private fun allocBuffer(size: Int): Pair<Long, ByteBuffer> {
