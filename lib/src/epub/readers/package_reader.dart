@@ -135,7 +135,7 @@ class PackageReader {
     metadataNode.children
         .whereType<XmlElement>()
         .forEach((XmlElement metadataItemNode) {
-      var innerText = metadataItemNode.innerText;
+      var innerText = metadataItemNode.value ?? metadataItemNode.innerText;
       switch (metadataItemNode.name.local.toLowerCase()) {
         case 'title':
           result.Titles!.add(innerText);
