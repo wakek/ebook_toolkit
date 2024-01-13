@@ -6,7 +6,7 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.pdf.PdfRenderer
-import android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_PRINT
+import android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.os.ParcelFileDescriptor.MODE_READ_ONLY
@@ -241,7 +241,7 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
                 bmp.eraseColor(Color.WHITE)
             }
 
-            it.render(bmp, null, mat, RENDER_MODE_FOR_PRINT)
+            it.render(bmp, null, mat, RENDER_MODE_FOR_DISPLAY)
 
             bmp.copyPixelsToBuffer(buf)
             bmp.recycle()
@@ -342,7 +342,7 @@ class EbookToolkitPlugin : FlutterPlugin, MethodCallHandler {
             if (backgroundFill) {
                 bmp.eraseColor(Color.WHITE)
             }
-            page.render(bmp, null, mat, RENDER_MODE_FOR_PRINT)
+            page.render(bmp, null, mat, RENDER_MODE_FOR_DISPLAY)
 
             tex.surfaceTexture().setDefaultBufferSize(width, height)
 
