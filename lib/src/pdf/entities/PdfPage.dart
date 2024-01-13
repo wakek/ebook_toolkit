@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:ebook_toolkit/src/ebook_toolkit_method_channel.dart';
 import 'package:ebook_toolkit/src/ebook_toolkit_platform_interface.dart';
 import 'package:ebook_toolkit/src/pdf/entities/PdfDocument.dart';
 import 'package:flutter/material.dart' as flutter_material;
+import 'package:image/image.dart';
 
 class PdfPage {
   final PdfDocument document;
@@ -109,14 +109,13 @@ class PDFPageImage {
   })  : _pixels = pixels,
         _buffer = buffer;
 
-  /// RGBA pixels in byte array.
+  /// ARGB pixels in byte array.
   Uint8List get pixels => _pixels;
 
-  /// Pointer to the internal RGBA image buffer if available; the size is calculated by `width*height*4`.
+  /// Pointer to the internal ARGB image buffer if available; the size is calculated by `width*height*4`.
   Pointer<Uint8>? get buffer => _buffer;
 
   void dispose() {
-    _imageCached?.dispose();
     _imageCached = null;
     if (_buffer != null) {
       methodChannel.invokeMethod('releaseBuffer', _buffer!.address);
@@ -125,8 +124,8 @@ class PDFPageImage {
   }
 
   /// Create cached [Image] for the page.
-  Future<Image> createImageIfNotAvailable() async {
-    _imageCached ??= await _decodeRgba(width, height, _pixels);
+  Image createImageIfNotAvailable() {
+    _imageCached ??= _decodeArgb(width, height, _pixels);
     return _imageCached!;
   }
 
@@ -134,8 +133,7 @@ class PDFPageImage {
   /// If you want to ensure that the [Image] is available, call [createImageIfNotAvailable].
   Image? get imageIfAvailable => _imageCached;
 
-  Future<Image> createImageDetached() async =>
-      await _decodeRgba(width, height, _pixels);
+  Image createImageDetached() => _decodeArgb(width, height, _pixels);
 
   static Future<PDFPageImage> _render(
     PdfDocument document,
@@ -187,17 +185,14 @@ class PDFPageImage {
         buffer: ptr);
   }
 
-  /// Decode RGBA raw image from native code.
-  static Future<Image> _decodeRgba(int width, int height, Uint8List pixels) {
-    final comp = Completer<Image>();
-    decodeImageFromPixels(
-      pixels,
-      width,
-      height,
-      PixelFormat.rgba8888,
-      (image) => comp.complete(image),
+  /// Decode ARGB raw image from native code.
+  static Image _decodeArgb(int width, int height, Uint8List pixels) {
+    return Image.fromBytes(
+      width: width,
+      height: height,
+      bytes: pixels.buffer,
+      order: ChannelOrder.argb,
     );
-    return comp.future;
   }
 }
 
