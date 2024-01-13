@@ -1,6 +1,6 @@
 library ebook_toolkit;
 
-export 'package:image/image.dart' show Image;
+// export 'package:image/image.dart' show Image;
 
 export 'src/epub/entities/epub_book.dart';
 export 'src/epub/entities/epub_byte_content_file.dart';

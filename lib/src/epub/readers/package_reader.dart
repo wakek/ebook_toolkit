@@ -135,23 +135,23 @@ class PackageReader {
     metadataNode.children
         .whereType<XmlElement>()
         .forEach((XmlElement metadataItemNode) {
-      var innerText = metadataItemNode.value ?? metadataItemNode.innerText;
       switch (metadataItemNode.name.local.toLowerCase()) {
         case 'title':
-          result.Titles!.add(innerText);
+          result.Titles!
+              .add(metadataItemNode.value ?? metadataItemNode.innerText);
           break;
         case 'creator':
           var creator = readMetadataCreator(metadataItemNode);
           result.Creators!.add(creator);
           break;
         case 'subject':
-          result.Subjects!.add(innerText);
+          result.Subjects!.add(metadataItemNode.innerText ?? '');
           break;
         case 'description':
-          result.Description = innerText;
+          result.Description = metadataItemNode.innerText;
           break;
         case 'publisher':
-          result.Publishers!.add(innerText);
+          result.Publishers!.add(metadataItemNode.innerText ?? '');
           break;
         case 'contributor':
           var contributor = readMetadataContributor(metadataItemNode);
@@ -162,29 +162,29 @@ class PackageReader {
           result.Dates!.add(date);
           break;
         case 'type':
-          result.Types!.add(innerText);
+          result.Types!.add(metadataItemNode.innerText ?? '');
           break;
         case 'format':
-          result.Formats!.add(innerText);
+          result.Formats!.add(metadataItemNode.innerText ?? '');
           break;
         case 'identifier':
           var identifier = readMetadataIdentifier(metadataItemNode);
           result.Identifiers!.add(identifier);
           break;
         case 'source':
-          result.Sources!.add(innerText);
+          result.Sources!.add(metadataItemNode.innerText ?? '');
           break;
         case 'language':
-          result.Languages!.add(innerText);
+          result.Languages!.add(metadataItemNode.innerText ?? '');
           break;
         case 'relation':
-          result.Relations!.add(innerText);
+          result.Relations!.add(metadataItemNode.innerText ?? '');
           break;
         case 'coverage':
-          result.Coverages!.add(innerText);
+          result.Coverages!.add(metadataItemNode.innerText ?? '');
           break;
         case 'rights':
-          result.Rights!.add(innerText);
+          result.Rights!.add(metadataItemNode.innerText ?? '');
           break;
         case 'meta':
           if (epubVersion == EpubVersion.Epub2) {
@@ -215,7 +215,7 @@ class PackageReader {
           break;
       }
     });
-    result.Contributor = metadataContributorNode.value;
+    result.Contributor = metadataContributorNode.innerText;
     return result;
   }
 
@@ -234,7 +234,7 @@ class PackageReader {
           break;
       }
     });
-    result.Creator = metadataCreatorNode.value;
+    result.Creator = metadataCreatorNode.innerText;
     return result;
   }
 
@@ -245,7 +245,7 @@ class PackageReader {
     if (eventAttribute != null && eventAttribute.isNotEmpty) {
       result.Event = eventAttribute;
     }
-    result.Date = metadataDateNode.value;
+    result.Date = metadataDateNode.innerText;
     return result;
   }
 
