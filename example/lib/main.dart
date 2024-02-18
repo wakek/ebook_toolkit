@@ -53,25 +53,25 @@ class _MyAppState extends State<MyApp> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Padding(padding: EdgeInsets.only(top: 16.0)),
-                  Text(
+                  const Padding(padding: EdgeInsets.only(top: 16.0)),
+                  const Text(
                     'Epub Inspector',
                     style: TextStyle(fontSize: 25.0),
                   ),
-                  Padding(padding: EdgeInsets.only(top: 50.0)),
-                  Text(
+                  const Padding(padding: EdgeInsets.only(top: 50.0)),
+                  const Text(
                     'Enter the Url of an Epub to view some of it\'s metadata.',
                     style: TextStyle(fontSize: 18.0),
                     textAlign: TextAlign.center,
                   ),
-                  Padding(padding: EdgeInsets.only(top: 20.0)),
+                  const Padding(padding: EdgeInsets.only(top: 20.0)),
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: "Enter Url",
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(),
+                        borderSide: const BorderSide(),
                       ),
                     ),
                     validator: (val) {
@@ -83,33 +83,34 @@ class _MyAppState extends State<MyApp> {
                     },
                     controller: _urlController,
                     keyboardType: TextInputType.url,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: "Poppins",
                     ),
                   ),
-                  Padding(
+                  const Padding(
                     padding: EdgeInsets.only(top: 20.0),
                   ),
                   ElevatedButton(
                     onPressed: fetchBookButton,
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                          EdgeInsets.all(8.0)),
-                      textStyle: MaterialStateProperty.all<TextStyle>(TextStyle(
+                          const EdgeInsets.all(8.0)),
+                      textStyle:
+                          MaterialStateProperty.all<TextStyle>(const TextStyle(
                         color: Colors.white,
                       )),
                       backgroundColor:
                           MaterialStateProperty.all<Color>(Colors.blue),
                     ),
-                    child: Text("Inspect Book"),
+                    child: const Text("Inspect Book"),
                   ),
-                  Padding(padding: EdgeInsets.only(top: 25.0)),
-                  Text(
+                  const Padding(padding: EdgeInsets.only(top: 25.0)),
+                  const Text(
                     'Or select available links:',
                     style: TextStyle(fontSize: 18.0),
                     textAlign: TextAlign.center,
                   ),
-                  Padding(padding: EdgeInsets.only(top: 12.0)),
+                  const Padding(padding: EdgeInsets.only(top: 12.0)),
                   Column(
                     children: [
                       ...[
@@ -126,7 +127,7 @@ class _MyAppState extends State<MyApp> {
                           .toList(),
                     ],
                   ),
-                  Padding(padding: EdgeInsets.only(top: 25.0)),
+                  const Padding(padding: EdgeInsets.only(top: 25.0)),
                   Center(
                     child: FutureBuilder<epub.EpubBookRef>(
                       future: book,
@@ -163,63 +164,65 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
   return Container(
       child: Column(
     children: <Widget>[
-      Text(
+      const Text(
         "Title",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Title!,
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Author",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Author!,
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Subjects",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Subjects?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Description",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Description ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Dates",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
-        book.Schema?.Package?.Metadata?.Dates?.map((e) => e.Date).join(', ') ??
+        book.Schema?.Package?.Metadata?.Dates
+                ?.map((e) => '${e.Date}, ${e.Event}')
+                .join(', ') ??
             '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Contributors",
         style: TextStyle(fontSize: 20.0),
       ),
@@ -228,100 +231,100 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
                 ?.map((e) => 'role:${e.Role};file:${e.FileAs}')
                 .join(', ') ??
             '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Coverages",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Coverages?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Formats",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Formats?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Types",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Types?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Publishers",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Publishers?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Sources",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Sources?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Rights",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Rights?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Relations",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Relations?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Languages",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         book.Schema?.Package?.Metadata?.Languages?.join(', ') ?? '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "Identifiers",
         style: TextStyle(fontSize: 20.0),
       ),
@@ -330,12 +333,12 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
                 ?.map((e) => e.Scheme)
                 .join(', ') ??
             '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "MetaItems",
         style: TextStyle(fontSize: 20.0),
       ),
@@ -344,20 +347,20 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
                 ?.map((e) => e.Name)
                 .join(', ') ??
             '',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
-      Text(
+      const Text(
         "PageList",
         style: TextStyle(fontSize: 20.0),
       ),
       Text(
         'PageList: ${book.Schema?.Navigation?.PageList?.Targets?.length}',
-        style: TextStyle(fontSize: 15.0),
+        style: const TextStyle(fontSize: 15.0),
       ),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
       FutureBuilder<List<epub.EpubChapterRef>>(
@@ -366,10 +369,10 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
             if (snapshot.hasData) {
               return Column(
                 children: <Widget>[
-                  Text("Chapters", style: TextStyle(fontSize: 20.0)),
+                  const Text("Chapters", style: TextStyle(fontSize: 20.0)),
                   Text(
-                    snapshot.data!.length.toString(),
-                    style: TextStyle(fontSize: 15.0),
+                    snapshot.data?.first.Anchor ?? '',
+                    style: const TextStyle(fontSize: 15.0),
                   )
                 ],
               );
@@ -378,7 +381,7 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
             }
             return Container();
           }),
-      Padding(
+      const Padding(
         padding: EdgeInsets.only(top: 15.0),
       ),
       FutureBuilder<image.Image?>(
@@ -387,7 +390,7 @@ Widget buildEpubWidget(epub.EpubBookRef book) {
           if (snapshot.hasData) {
             return Column(
               children: <Widget>[
-                Text("Cover", style: TextStyle(fontSize: 20.0)),
+                const Text("Cover", style: TextStyle(fontSize: 20.0)),
                 Image.memory(
                     Uint8List.fromList(image.encodePng(snapshot.data!))),
               ],

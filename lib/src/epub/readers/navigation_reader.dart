@@ -355,7 +355,7 @@ class NavigationReader {
           'Incorrect EPUB navigation label: label text element is missing.');
     }
 
-    result.Text = navigationLabelTextNode.value;
+    result.Text = navigationLabelTextNode.innerText;
 
     return result;
   }
