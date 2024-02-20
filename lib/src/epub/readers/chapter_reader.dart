@@ -28,8 +28,7 @@ class ChapterReader {
       } else {
         contentFileName = navigationPoint.Content!.Source!
             .substring(0, contentSourceAnchorCharIndex);
-        anchor = navigationPoint.Content!.Source!
-            .substring(contentSourceAnchorCharIndex + 1);
+        anchor = navigationPoint.Content!.Source;
       }
       contentFileName = Uri.decodeFull(contentFileName!);
       EpubTextContentFileRef? htmlContentFileRef;
