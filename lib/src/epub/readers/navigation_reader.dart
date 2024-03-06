@@ -363,7 +363,7 @@ class NavigationReader {
   static EpubNavigationLabel readNavigationLabelV3(
       xml.XmlElement navigationLabelNode) {
     var result = EpubNavigationLabel();
-    result.Text = navigationLabelNode.value?.trim();
+    result.Text = navigationLabelNode.innerText;
     return result;
   }
 
