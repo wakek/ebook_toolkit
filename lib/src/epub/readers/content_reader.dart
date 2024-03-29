@@ -17,7 +17,7 @@ class ContentReader {
 
     bookRef.Schema!.Package!.Manifest!.Items!
         .forEach((EpubManifestItem manifestItem) {
-      var fileName = manifestItem.Href;
+      var fileName = Uri.decodeFull(manifestItem.Href ?? '');
       var contentMimeType = manifestItem.MediaType!;
       var contentType = getContentTypeByContentMimeType(contentMimeType);
       switch (contentType) {
@@ -30,7 +30,7 @@ class ContentReader {
         case EpubContentType.DTBOOK_NCX:
           var epubTextContentFile = EpubTextContentFileRef(bookRef);
           {
-            epubTextContentFile.FileName = Uri.decodeFull(fileName!);
+            epubTextContentFile.FileName = fileName;
             epubTextContentFile.ContentMimeType = contentMimeType;
             epubTextContentFile.ContentType = contentType;
           }
@@ -62,7 +62,7 @@ class ContentReader {
         default:
           var epubByteContentFile = EpubByteContentFileRef(bookRef);
           {
-            epubByteContentFile.FileName = Uri.decodeFull(fileName!);
+            epubByteContentFile.FileName = fileName;
             epubByteContentFile.ContentMimeType = contentMimeType;
             epubByteContentFile.ContentType = contentType;
           }
