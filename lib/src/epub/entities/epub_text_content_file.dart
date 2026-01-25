@@ -1,22 +1,18 @@
-import 'package:quiver/core.dart';
-
-import 'epub_content_file.dart';
+import 'package:ebook_toolkit/src/epub/entities/epub_content_file.dart';
 
 class EpubTextContentFile extends EpubContentFile {
-  String? Content;
+  const EpubTextContentFile({
+    super.fileName,
+    super.contentType,
+    super.contentMimeType,
+    this.content,
+  });
+
+  final String? content;
 
   @override
-  int get hashCode => hash4(Content, ContentMimeType, ContentType, FileName);
-
-  @override
-  bool operator ==(other) {
-    if (!(other is EpubTextContentFile)) {
-      return false;
-    }
-
-    return Content == other.Content &&
-        ContentMimeType == other.ContentMimeType &&
-        ContentType == other.ContentType &&
-        FileName == other.FileName;
-  }
+  List<Object?> get props => [
+    ...super.props,
+    content,
+  ];
 }

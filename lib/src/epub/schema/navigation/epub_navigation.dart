@@ -1,51 +1,58 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_doc_author.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_doc_title.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_head.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_list.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_map.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_page_list.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_navigation_doc_author.dart';
-import 'epub_navigation_doc_title.dart';
-import 'epub_navigation_head.dart';
-import 'epub_navigation_list.dart';
-import 'epub_navigation_map.dart';
-import 'epub_navigation_page_list.dart';
+class EpubNavigation extends Equatable {
+  const EpubNavigation({
+    this.head,
+    this.docTitle,
+    this.docAuthors,
+    this.navMap,
+    this.pageList,
+    this.navLists,
+  });
 
-class EpubNavigation {
-  EpubNavigationHead? Head;
-  EpubNavigationDocTitle? DocTitle;
-  List<EpubNavigationDocAuthor>? DocAuthors;
-  EpubNavigationMap? NavMap;
-  EpubNavigationPageList? PageList;
-  List<EpubNavigationList>? NavLists;
+  final EpubNavigationHead? head;
+  final EpubNavigationDocTitle? docTitle;
+  final List<EpubNavigationDocAuthor>? docAuthors;
+  final EpubNavigationMap? navMap;
+  final EpubNavigationPageList? pageList;
+  final List<EpubNavigationList>? navLists;
 
   @override
-  int get hashCode {
-    var objects = [
-      Head.hashCode,
-      DocTitle.hashCode,
-      NavMap.hashCode,
-      PageList.hashCode,
-      ...DocAuthors?.map((author) => author.hashCode) ?? [0],
-      ...NavLists?.map((navList) => navList.hashCode) ?? [0]
-    ];
-    return hashObjects(objects);
+  List<Object?> get props => [
+    head,
+    docTitle,
+    docAuthors,
+    navMap,
+    pageList,
+    navLists,
+  ];
+
+  @override
+  String toString() {
+    return 'EpubNavigation{head: $head, docTitle: $docTitle, docAuthors: $docAuthors, navMap: $navMap, pageList: $pageList, navLists: $navLists}';
   }
 
-  @override
-  bool operator ==(other) {
-    var otherAs = other as EpubNavigation?;
-    if (otherAs == null) {
-      return false;
-    }
-
-    if (!collections.listsEqual(DocAuthors, otherAs.DocAuthors)) {
-      return false;
-    }
-    if (!collections.listsEqual(NavLists, otherAs.NavLists)) {
-      return false;
-    }
-
-    return Head == otherAs.Head &&
-        DocTitle == otherAs.DocTitle &&
-        NavMap == otherAs.NavMap &&
-        PageList == otherAs.PageList;
+  EpubNavigation copyWith({
+    EpubNavigationHead? head,
+    EpubNavigationDocTitle? docTitle,
+    List<EpubNavigationDocAuthor>? docAuthors,
+    EpubNavigationMap? navMap,
+    EpubNavigationPageList? pageList,
+    List<EpubNavigationList>? navLists,
+  }) {
+    return EpubNavigation(
+      head: head ?? this.head,
+      docTitle: docTitle ?? this.docTitle,
+      docAuthors: docAuthors ?? this.docAuthors,
+      navMap: navMap ?? this.navMap,
+      pageList: pageList ?? this.pageList,
+      navLists: navLists ?? this.navLists,
+    );
   }
 }

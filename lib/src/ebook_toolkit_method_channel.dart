@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:ebook_toolkit/src/pdf/entities/PdfDocument.dart';
-import 'package:ebook_toolkit/src/pdf/entities/PdfPage.dart';
+import 'package:ebook_toolkit/src/ebook_toolkit_platform_interface.dart';
+import 'package:ebook_toolkit/src/pdf/entities/pdf_document.dart';
+import 'package:ebook_toolkit/src/pdf/entities/pdf_page.dart';
 import 'package:flutter/services.dart';
-
-import 'ebook_toolkit_platform_interface.dart';
 
 const MethodChannel methodChannel = MethodChannel('ebook_toolkit');
 
@@ -23,7 +22,11 @@ class MethodChannelEbookToolkit extends EbookToolkitPlatform {
   @override
   Future<PdfDocument> openFromPath(String filePath) async {
     return _open(
-      await methodChannel.invokeMethod('openPdfFromFilePath', filePath),
+      await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+            'openPdfFromFilePath',
+            filePath,
+          ) ??
+          {},
       filePath,
     );
   }
@@ -31,7 +34,11 @@ class MethodChannelEbookToolkit extends EbookToolkitPlatform {
   @override
   Future<PdfDocument> openAsset(String assetName) async {
     return _open(
-      await methodChannel.invokeMethod('openAssetPdf', assetName),
+      await methodChannel.invokeMethod<Map<dynamic, dynamic>?>(
+            'openAssetPdf',
+            assetName,
+          ) ??
+          {},
       'asset:$assetName',
     );
   }
@@ -39,7 +46,11 @@ class MethodChannelEbookToolkit extends EbookToolkitPlatform {
   @override
   Future<PdfDocument> openFromMemory(Uint8List data) async {
     return _open(
-      await methodChannel.invokeMethod('openPdfFromMemory', data),
+      await methodChannel.invokeMethod<Map<dynamic, dynamic>?>(
+            'openPdfFromMemory',
+            data,
+          ) ??
+          {},
       'memory:${data.hashCode}',
     );
   }

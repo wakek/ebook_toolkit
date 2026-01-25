@@ -1,15 +1,32 @@
 import 'package:ebook_toolkit/src/epub/schema/opf/epub_guide.dart';
-import 'package:xml/src/xml/builder.dart' show XmlBuilder;
+import 'package:xml/xml.dart';
 
 class EpubGuideWriter {
-  static void writeGuide(XmlBuilder builder, EpubGuide? guide) {
-    builder.element('guide', nest: () {
-      guide!.Items!.forEach((guideItem) => builder.element('reference',
-              attributes: {
-                'type': guideItem.Type!,
-                'title': guideItem.Title!,
-                'href': guideItem.Href!
-              }));
-    });
+  factory EpubGuideWriter() {
+    return _singleton;
+  }
+
+  EpubGuideWriter._internal();
+
+  static final EpubGuideWriter _singleton = EpubGuideWriter._internal();
+
+  static EpubGuideWriter get instance => _singleton;
+
+  void writeGuide(XmlBuilder builder, EpubGuide? guide) {
+    builder.element(
+      'guide',
+      nest: () {
+        for (final guideItem in guide!.items!) {
+          builder.element(
+            'reference',
+            attributes: {
+              'type': guideItem.type!,
+              'title': guideItem.title!,
+              'href': guideItem.href!,
+            },
+          );
+        }
+      },
+    );
   }
 }

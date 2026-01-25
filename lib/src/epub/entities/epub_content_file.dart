@@ -1,23 +1,17 @@
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/entities/epub_content_type.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_content_type.dart';
+abstract class EpubContentFile extends Equatable {
+  const EpubContentFile({
+    this.fileName,
+    this.contentType,
+    this.contentMimeType,
+  });
 
-abstract class EpubContentFile {
-  String? FileName;
-  EpubContentType? ContentType;
-  String? ContentMimeType;
+  final String? fileName;
+  final EpubContentType? contentType;
+  final String? contentMimeType;
 
   @override
-  int get hashCode =>
-      hash3(FileName.hashCode, ContentType.hashCode, ContentMimeType.hashCode);
-
-  @override
-  bool operator ==(other) {
-    if (!(other is EpubContentFile)) {
-      return false;
-    }
-    return FileName == other.FileName &&
-        ContentType == other.ContentType &&
-        ContentMimeType == other.ContentMimeType;
-  }
+  List<Object?> get props => [fileName, contentType, contentMimeType];
 }

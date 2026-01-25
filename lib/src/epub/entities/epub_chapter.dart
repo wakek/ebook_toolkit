@@ -1,39 +1,31 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:equatable/equatable.dart';
 
-class EpubChapter {
-  String? Title;
-  String? ContentFileName;
-  String? Anchor;
-  String? HtmlContent;
-  List<EpubChapter>? SubChapters;
+class EpubChapter extends Equatable {
+  const EpubChapter({
+    this.title,
+    this.contentFileName,
+    this.anchor,
+    this.htmlContent,
+    this.subChapters,
+  });
 
-  @override
-  int get hashCode {
-    var objects = [
-      Title.hashCode,
-      ContentFileName.hashCode,
-      Anchor.hashCode,
-      HtmlContent.hashCode,
-      ...SubChapters?.map((subChapter) => subChapter.hashCode) ?? [0],
-    ];
-    return hashObjects(objects);
-  }
+  final String? title;
+  final String? contentFileName;
+  final String? anchor;
+  final String? htmlContent;
+  final List<EpubChapter>? subChapters;
 
   @override
-  bool operator ==(other) {
-    if (!(other is EpubChapter)) {
-      return false;
-    }
-    return Title == other.Title &&
-        ContentFileName == other.ContentFileName &&
-        Anchor == other.Anchor &&
-        HtmlContent == other.HtmlContent &&
-        collections.listsEqual(SubChapters, other.SubChapters);
-  }
+  List<Object?> get props => [
+    title,
+    contentFileName,
+    anchor,
+    htmlContent,
+    subChapters,
+  ];
 
   @override
   String toString() {
-    return 'Title: $Title, Subchapter count: ${SubChapters!.length}';
+    return 'Title: $title, Subchapter count: ${subChapters!.length}';
   }
 }

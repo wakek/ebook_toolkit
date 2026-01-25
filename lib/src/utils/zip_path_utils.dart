@@ -1,6 +1,17 @@
 class ZipPathUtils {
-  static String getDirectoryPath(String filePath) {
-    var lastSlashIndex = filePath.lastIndexOf('/');
+  factory ZipPathUtils() {
+    return _singleton;
+  }
+
+  ZipPathUtils._internal();
+
+  static final ZipPathUtils _singleton = ZipPathUtils._internal();
+
+  static ZipPathUtils get instance => _singleton;
+
+  String getDirectoryPath(String filePath) {
+    final lastSlashIndex = filePath.lastIndexOf('/');
+
     if (lastSlashIndex == -1) {
       return '';
     } else {
@@ -12,7 +23,7 @@ class ZipPathUtils {
     if (directory == null || directory == '') {
       return fileName;
     } else {
-      return directory + '/' + fileName!;
+      return '$directory/${fileName!}';
     }
   }
 }

@@ -1,41 +1,44 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_label.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_target.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_navigation_label.dart';
-import 'epub_navigation_target.dart';
+class EpubNavigationList extends Equatable {
+  const EpubNavigationList({
+    this.id,
+    this.navigationClass,
+    this.navigationLabels,
+    this.navigationTargets,
+  });
 
-class EpubNavigationList {
-  String? Id;
-  String? Class;
-  List<EpubNavigationLabel>? NavigationLabels;
-  List<EpubNavigationTarget>? NavigationTargets;
+  final String? id;
+  final String? navigationClass;
+  final List<EpubNavigationLabel>? navigationLabels;
+  final List<EpubNavigationTarget>? navigationTargets;
 
   @override
-  int get hashCode {
-    var objects = [
-      Id.hashCode,
-      Class.hashCode,
-      ...NavigationLabels?.map((label) => label.hashCode) ?? [0],
-      ...NavigationTargets?.map((target) => target.hashCode) ?? [0]
-    ];
-    return hashObjects(objects);
+  List<Object?> get props => [
+    id,
+    navigationClass,
+    navigationLabels,
+    navigationTargets,
+  ];
+
+  @override
+  String toString() {
+    return 'EpubNavigationList{id: $id, navigationClass: $navigationClass, navigationLabels: $navigationLabels, navigationTargets: $navigationTargets}';
   }
 
-  @override
-  bool operator ==(other) {
-    var otherAs = other as EpubNavigationList?;
-    if (otherAs == null) return false;
-
-    if (!(Id == otherAs.Id && Class == otherAs.Class)) {
-      return false;
-    }
-
-    if (!collections.listsEqual(NavigationLabels, otherAs.NavigationLabels)) {
-      return false;
-    }
-    if (!collections.listsEqual(NavigationTargets, otherAs.NavigationTargets)) {
-      return false;
-    }
-    return true;
+  EpubNavigationList copyWith({
+    String? id,
+    String? navigationClass,
+    List<EpubNavigationLabel>? navigationLabels,
+    List<EpubNavigationTarget>? navigationTargets,
+  }) {
+    return EpubNavigationList(
+      id: id ?? this.id,
+      navigationClass: navigationClass ?? this.navigationClass,
+      navigationLabels: navigationLabels ?? this.navigationLabels,
+      navigationTargets: navigationTargets ?? this.navigationTargets,
+    );
   }
 }

@@ -1,9 +1,18 @@
 import 'package:ebook_toolkit/src/ebook_toolkit_method_channel.dart';
 import 'package:ebook_toolkit/src/ebook_toolkit_platform_interface.dart';
-import 'package:ebook_toolkit/src/pdf/entities/PdfPage.dart';
+import 'package:ebook_toolkit/src/pdf/entities/pdf_page.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/services.dart';
 
-class PdfDocument {
+class PdfDocument extends Equatable {
+  PdfDocument({
+    required this.id,
+    required this.sourceName,
+    required this.pageCount,
+    required this.verMajor,
+    required this.verMinor,
+  }) : pages = List<PdfPage?>.filled(pageCount, null);
+
   final int id;
 
   /// File path, `asset:[ASSET_PATH]` or `memory:` depending on the content opened.
@@ -19,13 +28,14 @@ class PdfDocument {
 
   final List<PdfPage?> pages;
 
-  PdfDocument({
-    required this.id,
-    required this.sourceName,
-    required this.pageCount,
-    required this.verMajor,
-    required this.verMinor,
-  }) : pages = List<PdfPage?>.filled(pageCount, null);
+  @override
+  List<Object?> get props => [
+    id,
+    sourceName,
+    pageCount,
+    verMajor,
+    verMinor,
+  ];
 
   Future<void> dispose() async {
     await methodChannel.invokeMethod('closePdf', id);
@@ -50,7 +60,7 @@ class PdfDocument {
       return page;
     }
 
-    var map = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+    final map = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
       'getPageInfo',
       {'documentId': id, 'pageIndex': pageIndex},
     ))!;
@@ -68,7 +78,4 @@ class PdfDocument {
 
   @override
   String toString() => sourceName;
-
-  @override
-  int get hashCode => id;
 }

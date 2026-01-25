@@ -1,7 +1,3 @@
-library ebook_toolkit;
-
-// export 'package:image/image.dart' show Image;
-
 export 'src/epub/entities/epub_book.dart';
 export 'src/epub/entities/epub_byte_content_file.dart';
 export 'src/epub/entities/epub_chapter.dart';
@@ -36,7 +32,6 @@ export 'src/epub/schema/opf/epub_spine_item_ref.dart';
 export 'src/epub/schema/opf/epub_version.dart';
 export 'src/epub_reader.dart';
 export 'src/epub_writer.dart';
-export 'src/pdf/entities/PdfDocument.dart';
-export 'src/pdf/entities/PdfPage.dart';
+export 'src/pdf/entities/pdf_document.dart';
+export 'src/pdf/entities/pdf_page.dart';
 export 'src/pdf_reader.dart';
-export 'src/utils/enum_from_string.dart';

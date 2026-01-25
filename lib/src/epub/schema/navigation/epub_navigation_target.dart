@@ -1,43 +1,54 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_metadata.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_label.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_metadata.dart';
-import 'epub_navigation_label.dart';
+class EpubNavigationTarget extends Equatable {
+  const EpubNavigationTarget({
+    this.id,
+    this.navigationClass,
+    this.value,
+    this.playOrder,
+    this.navigationLabels,
+    this.content,
+  });
 
-class EpubNavigationTarget {
-  String? Id;
-  String? Class;
-  String? Value;
-  String? PlayOrder;
-  List<EpubNavigationLabel>? NavigationLabels;
-  EpubNavigationContent? Content;
+  final String? id;
+  final String? navigationClass;
+  final String? value;
+  final String? playOrder;
+  final List<EpubNavigationLabel>? navigationLabels;
+  final EpubNavigationContent? content;
 
   @override
-  int get hashCode {
-    var objects = [
-      Id.hashCode,
-      Class.hashCode,
-      Value.hashCode,
-      PlayOrder.hashCode,
-      Content.hashCode,
-      ...NavigationLabels!.map((label) => label.hashCode)
-    ];
-    return hashObjects(objects);
+  List<Object?> get props => [
+    id,
+    navigationClass,
+    value,
+    playOrder,
+    navigationLabels,
+    content,
+  ];
+
+  @override
+  String toString() {
+    return 'EpubNavigationTarget{id: $id, navigationClass: $navigationClass, value: $value, playOrder: $playOrder, navigationLabels: $navigationLabels, content: $content}';
   }
 
-  @override
-  bool operator ==(other) {
-    var otherAs = other as EpubNavigationTarget?;
-    if (otherAs == null) return false;
-
-    if (!(Id == otherAs.Id &&
-        Class == otherAs.Class &&
-        Value == otherAs.Value &&
-        PlayOrder == otherAs.PlayOrder &&
-        Content == otherAs.Content)) {
-      return false;
-    }
-
-    return collections.listsEqual(NavigationLabels, otherAs.NavigationLabels);
+  EpubNavigationTarget copyWith({
+    String? id,
+    String? navigationClass,
+    String? value,
+    String? playOrder,
+    List<EpubNavigationLabel>? navigationLabels,
+    EpubNavigationContent? content,
+  }) {
+    return EpubNavigationTarget(
+      id: id ?? this.id,
+      navigationClass: navigationClass ?? this.navigationClass,
+      value: value ?? this.value,
+      playOrder: playOrder ?? this.playOrder,
+      navigationLabels: navigationLabels ?? this.navigationLabels,
+      content: content ?? this.content,
+    );
   }
 }

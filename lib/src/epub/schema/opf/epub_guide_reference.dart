@@ -1,27 +1,37 @@
-import 'package:quiver/core.dart';
+import 'package:equatable/equatable.dart';
 
-class EpubGuideReference {
-  String? Type;
-  String? Title;
-  String? Href;
+class EpubGuideReference extends Equatable {
+  const EpubGuideReference({
+    this.type,
+    this.title,
+    this.href,
+  });
+
+  final String? type;
+  final String? title;
+  final String? href;
 
   @override
-  int get hashCode => hash3(Type.hashCode, Title.hashCode, Href.hashCode);
-
-  @override
-  bool operator ==(other) {
-    var otherAs = other as EpubGuideReference?;
-    if (otherAs == null) {
-      return false;
-    }
-
-    return Type == otherAs.Type &&
-        Title == otherAs.Title &&
-        Href == otherAs.Href;
-  }
+  List<Object?> get props => [
+    type,
+    title,
+    href,
+  ];
 
   @override
   String toString() {
-    return 'Type: $Type, Href: $Href';
+    return 'Type: $type, Href: $href';
+  }
+
+  EpubGuideReference copyWith({
+    String? type,
+    String? title,
+    String? href,
+  }) {
+    return EpubGuideReference(
+      type: type ?? this.type,
+      title: title ?? this.title,
+      href: href ?? this.href,
+    );
   }
 }

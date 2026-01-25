@@ -1,24 +1,14 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:equatable/equatable.dart';
 
-class EpubNavigationDocTitle {
-  List<String>? Titles;
+class EpubNavigationDocTitle extends Equatable {
+  const EpubNavigationDocTitle({
+    this.titles,
+  });
 
-  EpubNavigationDocTitle() {
-    Titles = <String>[];
-  }
-
-  @override
-  int get hashCode {
-    var objects = [...Titles!.map((title) => title.hashCode)];
-    return hashObjects(objects);
-  }
+  final List<String>? titles;
 
   @override
-  bool operator ==(other) {
-    var otherAs = other as EpubNavigationDocTitle?;
-    if (otherAs == null) return false;
-
-    return collections.listsEqual(Titles, otherAs.Titles);
-  }
+  List<Object?> get props => [
+    titles,
+  ];
 }

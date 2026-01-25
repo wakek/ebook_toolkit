@@ -1,25 +1,22 @@
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_package.dart';
+import 'package:equatable/equatable.dart';
 
-import '../schema/navigation/epub_navigation.dart';
-import '../schema/opf/epub_package.dart';
+class EpubSchema extends Equatable {
+  const EpubSchema({
+    this.package,
+    this.navigation,
+    this.contentDirectoryPath,
+  });
 
-class EpubSchema {
-  EpubPackage? Package;
-  EpubNavigation? Navigation;
-  String? ContentDirectoryPath;
+  final EpubPackage? package;
+  final EpubNavigation? navigation;
+  final String? contentDirectoryPath;
 
   @override
-  int get hashCode => hash3(
-      Package.hashCode, Navigation.hashCode, ContentDirectoryPath.hashCode);
-
-  @override
-  bool operator ==(other) {
-    if (!(other is EpubSchema)) {
-      return false;
-    }
-
-    return Package == other.Package &&
-        Navigation == other.Navigation &&
-        ContentDirectoryPath == other.ContentDirectoryPath;
-  }
+  List<Object?> get props => [
+    package,
+    navigation,
+    contentDirectoryPath,
+  ];
 }

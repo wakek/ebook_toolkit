@@ -1,21 +1,32 @@
-import 'package:quiver/core.dart';
+import 'package:equatable/equatable.dart';
 
-class EpubMetadataContributor {
-  String? Contributor;
-  String? FileAs;
-  String? Role;
+class EpubMetadataContributor extends Equatable {
+  const EpubMetadataContributor({
+    this.contributor,
+    this.fileAs,
+    this.role,
+  });
+
+  final String? contributor;
+  final String? fileAs;
+  final String? role;
 
   @override
-  int get hashCode =>
-      hash3(Contributor.hashCode, FileAs.hashCode, Role.hashCode);
+  List<Object?> get props => [
+    contributor,
+    fileAs,
+    role,
+  ];
 
-  @override
-  bool operator ==(other) {
-    var otherAs = other as EpubMetadataContributor?;
-    if (otherAs == null) return false;
-
-    return Contributor == otherAs.Contributor &&
-        FileAs == otherAs.FileAs &&
-        Role == otherAs.Role;
+  EpubMetadataContributor copyWith({
+    String? contributor,
+    String? fileAs,
+    String? role,
+  }) {
+    return EpubMetadataContributor(
+      contributor: contributor ?? this.contributor,
+      fileAs: fileAs ?? this.fileAs,
+      role: role ?? this.role,
+    );
   }
 }

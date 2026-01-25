@@ -1,12 +1,11 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:ebook_toolkit/src/pdf/entities/PdfDocument.dart';
-import 'package:ebook_toolkit/src/pdf/entities/PdfPage.dart';
+import 'package:ebook_toolkit/src/ebook_toolkit_method_channel.dart';
+import 'package:ebook_toolkit/src/pdf/entities/pdf_document.dart';
+import 'package:ebook_toolkit/src/pdf/entities/pdf_page.dart';
 import 'package:flutter/material.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
-import 'ebook_toolkit_method_channel.dart';
 
 abstract class EbookToolkitPlatform extends PlatformInterface {
   /// Constructs a EbookToolkitPlatform.
@@ -38,7 +37,7 @@ abstract class EbookToolkitPlatform extends PlatformInterface {
   /// Opening the PDF on memory.
   Future<PdfDocument> openFromMemory(Uint8List data);
 
-  /// Create a new Flutter [Texture]. The [PdfPageImageTexture] object should be released by calling [dispose] method after using it.
+  /// Create a new Flutter [Texture]. The [PdfPageImageTexture] object should be released by calling dispose method after using it.
   Future<PdfPageImageTexture> createTexture({
     required FutureOr<PdfDocument> pdfDocument,
     required int pageIndex,

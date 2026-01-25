@@ -4,11 +4,19 @@ import 'dart:typed_data';
 
 import 'package:ebook_toolkit/src/ebook_toolkit_method_channel.dart';
 import 'package:ebook_toolkit/src/ebook_toolkit_platform_interface.dart';
-import 'package:ebook_toolkit/src/pdf/entities/PdfDocument.dart';
+import 'package:ebook_toolkit/src/pdf/entities/pdf_document.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart' as flutter_material;
 import 'package:image/image.dart';
 
-class PdfPage {
+class PdfPage extends Equatable {
+  const PdfPage({
+    required this.document,
+    required this.pageIndex,
+    required this.width,
+    required this.height,
+  });
+
   final PdfDocument document;
 
   final int pageIndex;
@@ -19,21 +27,13 @@ class PdfPage {
   /// The page height in points (1/72").
   final double height;
 
-  PdfPage({
-    required this.document,
-    required this.pageIndex,
-    required this.width,
-    required this.height,
-  });
-
   @override
-  bool operator ==(dynamic other) =>
-      other is PdfPage &&
-      other.document == document &&
-      other.pageIndex == pageIndex;
-
-  @override
-  int get hashCode => document.hashCode ^ (pageIndex + 1);
+  List<Object?> get props => [
+    document,
+    pageIndex,
+    width,
+    height,
+  ];
 
   @override
   String toString() => '$document:page=$pageIndex';
@@ -64,6 +64,20 @@ class PdfPage {
 }
 
 class PDFPageImage {
+  PDFPageImage({
+    required this.pageIndex,
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+    required this.fullWidth,
+    required this.fullHeight,
+    required this.pageWidth,
+    required this.pageHeight,
+    required Uint8List pixels,
+    Pointer<Uint8>? buffer,
+  }) : _pixels = pixels,
+       _buffer = buffer;
   final int pageIndex;
 
   /// Left X coordinate of the rendered area in pixels.
@@ -94,31 +108,16 @@ class PDFPageImage {
   Pointer<Uint8>? _buffer;
   Image? _imageCached;
 
-  PDFPageImage({
-    required this.pageIndex,
-    required this.x,
-    required this.y,
-    required this.width,
-    required this.height,
-    required this.fullWidth,
-    required this.fullHeight,
-    required this.pageWidth,
-    required this.pageHeight,
-    required Uint8List pixels,
-    Pointer<Uint8>? buffer,
-  })  : _pixels = pixels,
-        _buffer = buffer;
-
   /// ARGB pixels in byte array.
   Uint8List get pixels => _pixels;
 
   /// Pointer to the internal ARGB image buffer if available; the size is calculated by `width*height*4`.
   Pointer<Uint8>? get buffer => _buffer;
 
-  void dispose() {
+  Future<void> dispose() async {
     _imageCached = null;
     if (_buffer != null) {
-      methodChannel.invokeMethod('releaseBuffer', _buffer!.address);
+      await methodChannel.invokeMethod('releaseBuffer', _buffer!.address);
       _buffer = null;
     }
   }
@@ -147,23 +146,26 @@ class PDFPageImage {
     bool? backgroundFill,
     bool? allowAntialiasingIOS,
   }) async {
-    final obj =
-        (await methodChannel.invokeMethod<Map<dynamic, dynamic>>('render', {
-      'documentId': document.id,
-      'pageIndex': pageIndex,
-      'x': x,
-      'y': y,
-      'width': width,
-      'height': height,
-      'fullWidth': fullWidth,
-      'fullHeight': fullHeight,
-      'backgroundFill': backgroundFill,
-      'allowAntialiasingIOS': allowAntialiasingIOS,
-    }))!;
+    final obj = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+      'render',
+      {
+        'documentId': document.id,
+        'pageIndex': pageIndex,
+        'x': x,
+        'y': y,
+        'width': width,
+        'height': height,
+        'fullWidth': fullWidth,
+        'fullHeight': fullHeight,
+        'backgroundFill': backgroundFill,
+        'allowAntialiasingIOS': allowAntialiasingIOS,
+      },
+    ))!;
     final retWidth = obj['width'] as int;
     final retHeight = obj['height'] as int;
     Pointer<Uint8>? ptr;
-    var pixels = obj['data'] as Uint8List? ??
+    final pixels =
+        obj['data'] as Uint8List? ??
         () {
           final addr = obj['addr'] as int;
           final size = obj['size'] as int;
@@ -172,17 +174,18 @@ class PDFPageImage {
         }();
 
     return PDFPageImage(
-        pageIndex: obj['pageIndex'] as int,
-        x: obj['x'] as int,
-        y: obj['y'] as int,
-        width: retWidth,
-        height: retHeight,
-        fullWidth: obj['fullWidth'] as double,
-        fullHeight: obj['fullHeight'] as double,
-        pageWidth: obj['pageWidth'] as double,
-        pageHeight: obj['pageHeight'] as double,
-        pixels: pixels,
-        buffer: ptr);
+      pageIndex: obj['pageIndex'] as int,
+      x: obj['x'] as int,
+      y: obj['y'] as int,
+      width: retWidth,
+      height: retHeight,
+      fullWidth: obj['fullWidth'] as double,
+      fullHeight: obj['fullHeight'] as double,
+      pageWidth: obj['pageWidth'] as double,
+      pageHeight: obj['pageHeight'] as double,
+      pixels: pixels,
+      buffer: ptr,
+    );
   }
 
   /// Decode ARGB raw image from native code.
@@ -199,7 +202,14 @@ class PDFPageImage {
 /// Very limited support for Flutter's [flutter_material.Texture] based drawing.
 /// Because it does not transfer the rendered image via platform channel,
 /// it could be faster and more efficient than the [PDFPageImage] based rendering process.
-class PdfPageImageTexture {
+// ignore: must_be_immutable
+class PdfPageImageTexture extends Equatable {
+  PdfPageImageTexture({
+    required this.pdfDocument,
+    required this.pageIndex,
+    required this.texId,
+  });
+
   final PdfDocument pdfDocument;
   final int pageIndex;
   final int texId;
@@ -207,21 +217,12 @@ class PdfPageImageTexture {
   int? _texWidth;
   int? _texHeight;
 
-  PdfPageImageTexture({
-    required this.pdfDocument,
-    required this.pageIndex,
-    required this.texId,
-  });
-
   @override
-  bool operator ==(Object other) {
-    return other is PdfPageImageTexture &&
-        other.pdfDocument == pdfDocument &&
-        other.pageIndex == pageIndex;
-  }
-
-  @override
-  int get hashCode => _document.id ^ pageIndex;
+  List<Object?> get props => [
+    pdfDocument,
+    pageIndex,
+    texId,
+  ];
 
   int? get texWidth => _texWidth;
 
@@ -231,27 +232,29 @@ class PdfPageImageTexture {
 
   PdfDocument get _document => pdfDocument;
 
-  /// Create a new Flutter [Texture]. The object should be released by calling [dispose] method after use it.
+  /// Create a new Flutter Texture. The object should be released by calling [dispose] method after use it.
   static Future<PdfPageImageTexture> create({
     required FutureOr<PdfDocument> pdfDocument,
     required int pageIndex,
-  }) =>
-      EbookToolkitPlatform.instance
-          .createTexture(pdfDocument: pdfDocument, pageIndex: pageIndex);
+  }) => EbookToolkitPlatform.instance.createTexture(
+    pdfDocument: pdfDocument,
+    pageIndex: pageIndex,
+  );
 
   /// Extract sub-rectangle ([x],[y],[width],[height]) of the PDF page scaled to [fullWidth] x [fullHeight] size.
   /// If [backgroundFill] is true, the sub-rectangle is filled with white before rendering the page content.
   /// Returns true if succeeded.
   /// Returns true if succeeded.
-  Future<bool> extractSubrect(
-      {int x = 0,
-      int y = 0,
-      required int width,
-      required int height,
-      double? fullWidth,
-      double? fullHeight,
-      bool backgroundFill = true,
-      bool allowAntialiasingIOS = true}) async {
+  Future<bool> extractSubrect({
+    required int width,
+    required int height,
+    int x = 0,
+    int y = 0,
+    double? fullWidth,
+    double? fullHeight,
+    bool backgroundFill = true,
+    bool allowAntialiasingIOS = true,
+  }) async {
     final result = (await methodChannel.invokeMethod<int>('updateTexture', {
       'documentId': _document.id,
       'pageIndex': pageIndex,

@@ -1,78 +1,102 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_metadata_contributor.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_metadata_creator.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_metadata_date.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_metadata_identifier.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_metadata_meta.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_metadata_contributor.dart';
-import 'epub_metadata_creator.dart';
-import 'epub_metadata_date.dart';
-import 'epub_metadata_identifier.dart';
-import 'epub_metadata_meta.dart';
+class EpubMetadata extends Equatable {
+  const EpubMetadata({
+    this.titles,
+    this.creators,
+    this.subjects,
+    this.description,
+    this.publishers,
+    this.contributors,
+    this.dates,
+    this.types,
+    this.formats,
+    this.identifiers,
+    this.sources,
+    this.languages,
+    this.relations,
+    this.coverages,
+    this.rights,
+    this.metaItems,
+  });
 
-class EpubMetadata {
-  List<String>? Titles;
-  List<EpubMetadataCreator>? Creators;
-  List<String>? Subjects;
-  String? Description;
-  List<String>? Publishers;
-  List<EpubMetadataContributor>? Contributors;
-  List<EpubMetadataDate>? Dates;
-  List<String>? Types;
-  List<String>? Formats;
-  List<EpubMetadataIdentifier>? Identifiers;
-  List<String>? Sources;
-  List<String>? Languages;
-  List<String>? Relations;
-  List<String>? Coverages;
-  List<String>? Rights;
-  List<EpubMetadataMeta>? MetaItems;
-
-  @override
-  int get hashCode {
-    var objects = [
-      ...Titles!.map((title) => title.hashCode),
-      ...Creators!.map((creator) => creator.hashCode),
-      ...Subjects!.map((subject) => subject.hashCode),
-      ...Publishers!.map((publisher) => publisher.hashCode),
-      ...Contributors!.map((contributor) => contributor.hashCode),
-      ...Dates!.map((date) => date.hashCode),
-      ...Types!.map((type) => type.hashCode),
-      ...Formats!.map((format) => format.hashCode),
-      ...Identifiers!.map((identifier) => identifier.hashCode),
-      ...Sources!.map((source) => source.hashCode),
-      ...Languages!.map((language) => language.hashCode),
-      ...Relations!.map((relation) => relation.hashCode),
-      ...Coverages!.map((coverage) => coverage.hashCode),
-      ...Rights!.map((right) => right.hashCode),
-      ...MetaItems!.map((metaItem) => metaItem.hashCode),
-      Description.hashCode
-    ];
-
-    return hashObjects(objects);
-  }
+  final List<String>? titles;
+  final List<EpubMetadataCreator>? creators;
+  final List<String>? subjects;
+  final String? description;
+  final List<String>? publishers;
+  final List<EpubMetadataContributor>? contributors;
+  final List<EpubMetadataDate>? dates;
+  final List<String>? types;
+  final List<String>? formats;
+  final List<EpubMetadataIdentifier>? identifiers;
+  final List<String>? sources;
+  final List<String>? languages;
+  final List<String>? relations;
+  final List<String>? coverages;
+  final List<String>? rights;
+  final List<EpubMetadataMeta>? metaItems;
 
   @override
-  bool operator ==(other) {
-    var otherAs = other as EpubMetadata?;
-    if (otherAs == null) return false;
-    if (Description != otherAs.Description) return false;
+  List<Object?> get props => [
+    titles,
+    creators,
+    subjects,
+    description,
+    publishers,
+    contributors,
+    dates,
+    types,
+    formats,
+    identifiers,
+    sources,
+    languages,
+    relations,
+    coverages,
+    rights,
+    metaItems,
+  ];
 
-    if (!collections.listsEqual(Titles, otherAs.Titles) ||
-        !collections.listsEqual(Creators, otherAs.Creators) ||
-        !collections.listsEqual(Subjects, otherAs.Subjects) ||
-        !collections.listsEqual(Publishers, otherAs.Publishers) ||
-        !collections.listsEqual(Contributors, otherAs.Contributors) ||
-        !collections.listsEqual(Dates, otherAs.Dates) ||
-        !collections.listsEqual(Types, otherAs.Types) ||
-        !collections.listsEqual(Formats, otherAs.Formats) ||
-        !collections.listsEqual(Identifiers, otherAs.Identifiers) ||
-        !collections.listsEqual(Sources, otherAs.Sources) ||
-        !collections.listsEqual(Languages, otherAs.Languages) ||
-        !collections.listsEqual(Relations, otherAs.Relations) ||
-        !collections.listsEqual(Coverages, otherAs.Coverages) ||
-        !collections.listsEqual(Rights, otherAs.Rights) ||
-        !collections.listsEqual(MetaItems, otherAs.MetaItems)) {
-      return false;
-    }
-
-    return true;
+  EpubMetadata copyWith({
+    List<String>? titles,
+    List<EpubMetadataCreator>? creators,
+    List<String>? subjects,
+    String? description,
+    List<String>? publishers,
+    List<EpubMetadataContributor>? contributors,
+    List<EpubMetadataDate>? dates,
+    List<String>? types,
+    List<String>? formats,
+    List<EpubMetadataIdentifier>? identifiers,
+    List<String>? sources,
+    List<String>? languages,
+    List<String>? relations,
+    List<String>? coverages,
+    List<String>? rights,
+    List<EpubMetadataMeta>? metaItems,
+  }) {
+    return EpubMetadata(
+      titles: titles ?? this.titles,
+      creators: creators ?? this.creators,
+      subjects: subjects ?? this.subjects,
+      description: description ?? this.description,
+      publishers: publishers ?? this.publishers,
+      contributors: contributors ?? this.contributors,
+      dates: dates ?? this.dates,
+      types: types ?? this.types,
+      formats: formats ?? this.formats,
+      identifiers: identifiers ?? this.identifiers,
+      sources: sources ?? this.sources,
+      languages: languages ?? this.languages,
+      relations: relations ?? this.relations,
+      coverages: coverages ?? this.coverages,
+      rights: rights ?? this.rights,
+      metaItems: metaItems ?? this.metaItems,
+    );
   }
 }

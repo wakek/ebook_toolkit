@@ -1,22 +1,37 @@
-import 'package:quiver/core.dart';
+import 'package:equatable/equatable.dart';
 
-class EpubNavigationHeadMeta {
-  String? Name;
-  String? Content;
-  String? Scheme;
+class EpubNavigationHeadMeta extends Equatable {
+  const EpubNavigationHeadMeta({
+    this.name,
+    this.content,
+    this.scheme,
+  });
+
+  final String? name;
+  final String? content;
+  final String? scheme;
 
   @override
-  int get hashCode => hash3(Name.hashCode, Content.hashCode, Scheme.hashCode);
+  List<Object?> get props => [
+    name,
+    content,
+    scheme,
+  ];
 
   @override
-  bool operator ==(other) {
-    var otherAs = other as EpubNavigationHeadMeta?;
-    if (otherAs == null) {
-      return false;
-    }
+  String toString() {
+    return 'EpubNavigationHeadMeta{name: $name, content: $content, scheme: $scheme}';
+  }
 
-    return Name == otherAs.Name &&
-        Content == otherAs.Content &&
-        Scheme == otherAs.Scheme;
+  EpubNavigationHeadMeta copyWith({
+    String? name,
+    String? content,
+    String? scheme,
+  }) {
+    return EpubNavigationHeadMeta(
+      name: name ?? this.name,
+      content: content ?? this.content,
+      scheme: scheme ?? this.scheme,
+    );
   }
 }

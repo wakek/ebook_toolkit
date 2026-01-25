@@ -1,52 +1,29 @@
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/entities/epub_byte_content_file.dart';
+import 'package:ebook_toolkit/src/epub/entities/epub_content_file.dart';
+import 'package:ebook_toolkit/src/epub/entities/epub_text_content_file.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_byte_content_file.dart';
-import 'epub_content_file.dart';
-import 'epub_text_content_file.dart';
+class EpubContent extends Equatable {
+  const EpubContent({
+    this.html = const <String, EpubTextContentFile>{},
+    this.css = const <String, EpubTextContentFile>{},
+    this.images = const <String, EpubByteContentFile>{},
+    this.fonts = const <String, EpubByteContentFile>{},
+    this.allFiles = const <String, EpubContentFile>{},
+  });
 
-class EpubContent {
-  Map<String, EpubTextContentFile>? Html;
-  Map<String, EpubTextContentFile>? Css;
-  Map<String, EpubByteContentFile>? Images;
-  Map<String, EpubByteContentFile>? Fonts;
-  Map<String, EpubContentFile>? AllFiles;
-
-  EpubContent() {
-    Html = <String, EpubTextContentFile>{};
-    Css = <String, EpubTextContentFile>{};
-    Images = <String, EpubByteContentFile>{};
-    Fonts = <String, EpubByteContentFile>{};
-    AllFiles = <String, EpubContentFile>{};
-  }
+  final Map<String, EpubTextContentFile>? html;
+  final Map<String, EpubTextContentFile>? css;
+  final Map<String, EpubByteContentFile>? images;
+  final Map<String, EpubByteContentFile>? fonts;
+  final Map<String, EpubContentFile>? allFiles;
 
   @override
-  int get hashCode {
-    var objects = [
-      ...Html!.keys.map((key) => key.hashCode),
-      ...Html!.values.map((value) => value.hashCode),
-      ...Css!.keys.map((key) => key.hashCode),
-      ...Css!.values.map((value) => value.hashCode),
-      ...Images!.keys.map((key) => key.hashCode),
-      ...Images!.values.map((value) => value.hashCode),
-      ...Fonts!.keys.map((key) => key.hashCode),
-      ...Fonts!.values.map((value) => value.hashCode),
-      ...AllFiles!.keys.map((key) => key.hashCode),
-      ...AllFiles!.values.map((value) => value.hashCode),
-    ];
-
-    return hashObjects(objects);
-  }
-
-  @override
-  bool operator ==(other) {
-    if (!(other is EpubContent)) {
-      return false;
-    }
-    return collections.mapsEqual(Html, other.Html) &&
-        collections.mapsEqual(Css, other.Css) &&
-        collections.mapsEqual(Images, other.Images) &&
-        collections.mapsEqual(Fonts, other.Fonts) &&
-        collections.mapsEqual(AllFiles, other.AllFiles);
-  }
+  List<Object?> get props => [
+    html,
+    css,
+    images,
+    fonts,
+    allFiles,
+  ];
 }

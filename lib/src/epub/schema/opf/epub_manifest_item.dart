@@ -1,49 +1,67 @@
-import 'package:quiver/core.dart';
+import 'package:equatable/equatable.dart';
 
-class EpubManifestItem {
-  String? Id;
-  String? Href;
-  String? MediaType;
-  String? MediaOverlay;
-  String? RequiredNamespace;
-  String? RequiredModules;
-  String? Fallback;
-  String? FallbackStyle;
-  String? Properties;
+class EpubManifestItem extends Equatable {
+  const EpubManifestItem({
+    this.id,
+    this.href,
+    this.mediaType,
+    this.mediaOverlay,
+    this.requiredNamespace,
+    this.requiredModules,
+    this.fallback,
+    this.fallbackStyle,
+    this.properties,
+  });
+
+  final String? id;
+  final String? href;
+  final String? mediaType;
+  final String? mediaOverlay;
+  final String? requiredNamespace;
+  final String? requiredModules;
+  final String? fallback;
+  final String? fallbackStyle;
+  final String? properties;
 
   @override
-  int get hashCode => hashObjects([
-        Id.hashCode,
-        Href.hashCode,
-        MediaType.hashCode,
-        MediaOverlay.hashCode,
-        RequiredNamespace.hashCode,
-        RequiredModules.hashCode,
-        Fallback.hashCode,
-        FallbackStyle.hashCode,
-        Properties.hashCode
-      ]);
-
-  @override
-  bool operator ==(other) {
-    var otherAs = other as EpubManifestItem?;
-    if (otherAs == null) {
-      return false;
-    }
-
-    return Id == otherAs.Id &&
-        Href == otherAs.Href &&
-        MediaType == otherAs.MediaType &&
-        MediaOverlay == otherAs.MediaOverlay &&
-        RequiredNamespace == otherAs.RequiredNamespace &&
-        RequiredModules == otherAs.RequiredModules &&
-        Fallback == otherAs.Fallback &&
-        FallbackStyle == otherAs.FallbackStyle &&
-        Properties == otherAs.Properties;
-  }
+  List<Object?> get props => [
+    id,
+    href,
+    mediaType,
+    mediaOverlay,
+    requiredNamespace,
+    requiredModules,
+    fallback,
+    fallbackStyle,
+    properties,
+  ];
 
   @override
   String toString() {
-    return 'Id: $Id, Href = $Href, MediaType = $MediaType, Properties = $Properties, MediaOverlay = $MediaOverlay';
+    return 'Id: $id, Href = $href, MediaType = $mediaType, Properties = $properties, MediaOverlay = $mediaOverlay';
+  }
+
+  EpubManifestItem copyWith({
+    String? id,
+    String? href,
+    String? mediaType,
+    String? mediaOverlay,
+    String? requiredNamespace,
+    String? requiredModules,
+    String? fallback,
+    String? fallbackStyle,
+    String? properties,
+  }) {
+    return EpubManifestItem(
+      id: id ?? this.id,
+      href: href ?? this.href,
+      mediaType: mediaType ?? this.mediaType,
+      mediaOverlay: mediaOverlay ?? this.mediaOverlay,
+      requiredNamespace: requiredNamespace ?? this.requiredNamespace,
+      requiredModules: requiredModules ?? this.requiredModules,
+      fallback: fallback ?? this.fallback,
+      fallbackStyle: fallbackStyle ?? this.fallbackStyle,
+      properties: properties ?? this.properties,
+    );
   }
 }

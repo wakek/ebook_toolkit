@@ -1,45 +1,22 @@
 import 'dart:async';
 
-import 'package:quiver/collection.dart' as collections;
-import 'package:quiver/core.dart';
+import 'package:ebook_toolkit/src/epub/ref_entities/epub_text_content_file_ref.dart';
+import 'package:equatable/equatable.dart';
 
-import 'epub_text_content_file_ref.dart';
+class EpubChapterRef extends Equatable {
+  const EpubChapterRef({
+    this.epubTextContentFileRef,
+    this.title,
+    this.contentFileName,
+    this.anchor,
+    this.subChapters,
+  });
 
-class EpubChapterRef {
-  EpubTextContentFileRef? epubTextContentFileRef;
-
-  String? Title;
-  String? ContentFileName;
-  String? Anchor;
-  List<EpubChapterRef>? SubChapters;
-
-  EpubChapterRef(EpubTextContentFileRef? epubTextContentFileRef) {
-    this.epubTextContentFileRef = epubTextContentFileRef;
-  }
-
-  @override
-  int get hashCode {
-    var objects = [
-      Title.hashCode,
-      ContentFileName.hashCode,
-      Anchor.hashCode,
-      epubTextContentFileRef.hashCode,
-      ...SubChapters?.map((subChapter) => subChapter.hashCode) ?? [0],
-    ];
-    return hashObjects(objects);
-  }
-
-  @override
-  bool operator ==(other) {
-    if (!(other is EpubChapterRef)) {
-      return false;
-    }
-    return Title == other.Title &&
-        ContentFileName == other.ContentFileName &&
-        Anchor == other.Anchor &&
-        epubTextContentFileRef == other.epubTextContentFileRef &&
-        collections.listsEqual(SubChapters, other.SubChapters);
-  }
+  final EpubTextContentFileRef? epubTextContentFileRef;
+  final String? title;
+  final String? contentFileName;
+  final String? anchor;
+  final List<EpubChapterRef>? subChapters;
 
   Future<String> readHtmlContent() async {
     return epubTextContentFileRef!.readContentAsText();
@@ -47,6 +24,15 @@ class EpubChapterRef {
 
   @override
   String toString() {
-    return 'Title: $Title, Subchapter count: ${SubChapters!.length}';
+    return 'Title: $title, Subchapter count: ${subChapters!.length}';
   }
+
+  @override
+  List<Object?> get props => [
+    epubTextContentFileRef,
+    title,
+    contentFileName,
+    anchor,
+    subChapters,
+  ];
 }
