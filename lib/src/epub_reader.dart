@@ -27,6 +27,16 @@ import 'package:ebook_toolkit/src/epub/schema/opf/epub_metadata_creator.dart';
 /// String genres = metadata.Subjects.join(', ');
 /// ```
 class EpubReader {
+  factory EpubReader() {
+    return _singleton;
+  }
+
+  EpubReader._internal();
+
+  static final EpubReader _singleton = EpubReader._internal();
+
+  static EpubReader get instance => _singleton;
+
   /// Loads basics metadata.
   ///
   /// Opens the book asynchronously without reading its main content.
