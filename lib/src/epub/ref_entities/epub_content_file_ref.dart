@@ -52,7 +52,7 @@ abstract class EpubContentFileRef extends Equatable {
 
   List<int> openContentStream(ArchiveFile contentFileEntry) {
     final contentStream = <int>[];
-    if (contentFileEntry.content == null) {
+    if (contentFileEntry.content.isEmpty) {
       throw Exception(
         'Incorrect EPUB file: content file "$fileName" specified in manifest is not found.',
       );
