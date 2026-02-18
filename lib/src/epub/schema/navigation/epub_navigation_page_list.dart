@@ -17,4 +17,12 @@ class EpubNavigationPageList extends Equatable {
   String toString() {
     return 'EpubNavigationPageList{targets: $targets}';
   }
+
+  EpubNavigationPageList copyWith({
+    List<EpubNavigationPageTarget>? targets,
+  }) {
+    return EpubNavigationPageList(
+      targets: targets ?? this.targets,
+    );
+  }
 }

@@ -12,4 +12,12 @@ class EpubGuide extends Equatable {
   List<Object?> get props => [
     items,
   ];
+
+  EpubGuide copyWith({
+    List<EpubGuideReference>? items,
+  }) {
+    return EpubGuide(
+      items: items ?? this.items,
+    );
+  }
 }

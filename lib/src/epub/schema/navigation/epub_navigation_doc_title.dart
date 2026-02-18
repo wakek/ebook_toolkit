@@ -11,4 +11,12 @@ class EpubNavigationDocTitle extends Equatable {
   List<Object?> get props => [
     titles,
   ];
+
+  EpubNavigationDocTitle copyWith({
+    List<String>? titles,
+  }) {
+    return EpubNavigationDocTitle(
+      titles: titles ?? this.titles,
+    );
+  }
 }

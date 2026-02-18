@@ -17,4 +17,12 @@ class EpubNavigationMap extends Equatable {
   String toString() {
     return 'EpubNavigationMap{points: $points}';
   }
+
+  EpubNavigationMap copyWith({
+    List<EpubNavigationPoint>? points,
+  }) {
+    return EpubNavigationMap(
+      points: points ?? this.points,
+    );
+  }
 }

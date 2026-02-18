@@ -17,4 +17,12 @@ class EpubManifest extends Equatable {
   String toString() {
     return 'EpubManifest{items: $items}';
   }
+
+  EpubManifest copyWith({
+    List<EpubManifestItem>? items,
+  }) {
+    return EpubManifest(
+      items: items ?? this.items,
+    );
+  }
 }

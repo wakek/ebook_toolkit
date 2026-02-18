@@ -31,9 +31,7 @@ class PackageReader {
   static PackageReader get instance => _singleton;
 
   EpubGuide readGuide(XmlElement guideNode) {
-    const result = EpubGuide(
-      items: <EpubGuideReference>[],
-    );
+    final items = <EpubGuideReference>[];
 
     guideNode.children.whereType<XmlElement>().forEach((
       XmlElement guideReferenceNode,
@@ -65,17 +63,15 @@ class PackageReader {
         if (guideReference.href == null || guideReference.href!.isEmpty) {
           throw Exception('Incorrect EPUB guide: item href is missing');
         }
-        result.items!.add(guideReference);
+        items.add(guideReference);
       }
     });
 
-    return result;
+    return EpubGuide(items: items);
   }
 
   EpubManifest readManifest(XmlElement manifestNode) {
-    const result = EpubManifest(
-      items: <EpubManifestItem>[],
-    );
+    final items = <EpubManifestItem>[];
 
     manifestNode.children.whereType<XmlElement>().forEach((
       XmlElement manifestItemNode,
@@ -136,87 +132,101 @@ class PackageReader {
             'Incorrect EPUB manifest: item media type is missing',
           );
         }
-        result.items!.add(manifestItem);
+        items.add(manifestItem);
       }
     });
-    return result;
+    return EpubManifest(items: items);
   }
 
   EpubMetadata readMetadata(
     XmlElement metadataNode,
     EpubVersion? epubVersion,
   ) {
-    var result = const EpubMetadata(
-      titles: <String>[],
-      creators: <EpubMetadataCreator>[],
-      subjects: <String>[],
-      publishers: <String>[],
-      contributors: <EpubMetadataContributor>[],
-      dates: <EpubMetadataDate>[],
-      types: <String>[],
-      formats: <String>[],
-      identifiers: <EpubMetadataIdentifier>[],
-      sources: <String>[],
-      languages: <String>[],
-      relations: <String>[],
-      coverages: <String>[],
-      rights: <String>[],
-      metaItems: <EpubMetadataMeta>[],
-    );
+    var description = '';
+    final titles = <String>[];
+    final creators = <EpubMetadataCreator>[];
+    final subjects = <String>[];
+    final publishers = <String>[];
+    final contributors = <EpubMetadataContributor>[];
+    final dates = <EpubMetadataDate>[];
+    final types = <String>[];
+    final formats = <String>[];
+    final identifiers = <EpubMetadataIdentifier>[];
+    final sources = <String>[];
+    final languages = <String>[];
+    final relations = <String>[];
+    final coverages = <String>[];
+    final rights = <String>[];
+    final metaItems = <EpubMetadataMeta>[];
 
     metadataNode.children.whereType<XmlElement>().forEach((
       XmlElement metadataItemNode,
     ) {
       switch (metadataItemNode.name.local.toLowerCase()) {
         case 'title':
-          result.titles!.add(
+          titles.add(
             metadataItemNode.value ?? metadataItemNode.innerText,
           );
         case 'creator':
           final creator = readMetadataCreator(metadataItemNode);
-          result.creators!.add(creator);
+          creators.add(creator);
         case 'subject':
-          result.subjects!.add(metadataItemNode.innerText);
+          subjects.add(metadataItemNode.innerText);
         case 'description':
-          result = result.copyWith(
-            description: metadataItemNode.innerText,
-          );
+          description = metadataItemNode.innerText;
         case 'publisher':
-          result.publishers!.add(metadataItemNode.innerText);
+          publishers.add(metadataItemNode.innerText);
         case 'contributor':
           final contributor = readMetadataContributor(metadataItemNode);
-          result.contributors!.add(contributor);
+          contributors.add(contributor);
         case 'date':
           final date = readMetadataDate(metadataItemNode);
-          result.dates!.add(date);
+          dates.add(date);
         case 'type':
-          result.types!.add(metadataItemNode.innerText);
+          types.add(metadataItemNode.innerText);
         case 'format':
-          result.formats!.add(metadataItemNode.innerText);
+          formats.add(metadataItemNode.innerText);
         case 'identifier':
           final identifier = readMetadataIdentifier(metadataItemNode);
-          result.identifiers!.add(identifier);
+          identifiers.add(identifier);
         case 'source':
-          result.sources!.add(metadataItemNode.innerText);
+          sources.add(metadataItemNode.innerText);
         case 'language':
-          result.languages!.add(metadataItemNode.innerText);
+          languages.add(metadataItemNode.innerText);
         case 'relation':
-          result.relations!.add(metadataItemNode.innerText);
+          relations.add(metadataItemNode.innerText);
         case 'coverage':
-          result.coverages!.add(metadataItemNode.innerText);
+          coverages.add(metadataItemNode.innerText);
         case 'rights':
-          result.rights!.add(metadataItemNode.innerText);
+          rights.add(metadataItemNode.innerText);
         case 'meta':
           if (epubVersion == EpubVersion.epub2) {
             final meta = readMetadataMetaVersion2(metadataItemNode);
-            result.metaItems!.add(meta);
+            metaItems.add(meta);
           } else if (epubVersion == EpubVersion.epub3) {
             final meta = readMetadataMetaVersion3(metadataItemNode);
-            result.metaItems!.add(meta);
+            metaItems.add(meta);
           }
       }
     });
-    return result;
+    return EpubMetadata(
+      titles: titles,
+      creators: creators,
+      subjects: subjects,
+      description: description,
+      publishers: publishers,
+      contributors: contributors,
+      dates: dates,
+      types: types,
+      formats: formats,
+      identifiers: identifiers,
+      sources: sources,
+      languages: languages,
+      relations: relations,
+      coverages: coverages,
+      rights: rights,
+      metaItems: metaItems,
+    );
   }
 
   EpubMetadataContributor readMetadataContributor(
@@ -417,7 +427,7 @@ class PackageReader {
 
     final manifest = readManifest(manifestNode);
 
-    result.copyWith(
+    result = result.copyWith(
       manifest: manifest,
     );
 
@@ -453,11 +463,7 @@ class PackageReader {
       'page-progression-direction',
     );
 
-    final result = EpubSpine(
-      items: const [],
-      tableOfContents: spineNode.getAttribute('toc'),
-      ltr: (pageProgression == null) || pageProgression.toLowerCase() == 'ltr',
-    );
+    final items = <EpubSpineItemRef>[];
 
     spineNode.children.whereType<XmlElement>().forEach((
       XmlElement spineItemNode,
@@ -471,7 +477,7 @@ class PackageReader {
 
         final linearAttribute = spineItemNode.getAttribute('linear');
 
-        result.items!.add(
+        items.add(
           EpubSpineItemRef(
             idRef: idRefAttribute,
             isLinear:
@@ -482,6 +488,10 @@ class PackageReader {
       }
     });
 
-    return result;
+    return EpubSpine(
+      items: items,
+      tableOfContents: spineNode.getAttribute('toc'),
+      ltr: (pageProgression == null) || pageProgression.toLowerCase() == 'ltr',
+    );
   }
 }

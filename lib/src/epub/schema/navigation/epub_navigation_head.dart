@@ -17,4 +17,12 @@ class EpubNavigationHead extends Equatable {
   String toString() {
     return 'EpubNavigationHead{Metadata: $metadata}';
   }
+
+  EpubNavigationHead copyWith({
+    List<EpubNavigationHeadMeta>? metadata,
+  }) {
+    return EpubNavigationHead(
+      metadata: metadata ?? this.metadata,
+    );
+  }
 }
