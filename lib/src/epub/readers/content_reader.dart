@@ -39,9 +39,9 @@ class ContentReader {
 
           switch (contentType) {
             case EpubContentType.xhtml_1_1:
-              result.html![fileName] = epubTextContentFile;
+              (result.html ?? {})[fileName] = epubTextContentFile;
             case EpubContentType.css:
-              result.css![fileName] = epubTextContentFile;
+              (result.css ?? {})[fileName] = epubTextContentFile;
             case EpubContentType.dtbook:
             case EpubContentType.dtbookNcx:
             case EpubContentType.oeb1Document:
@@ -79,10 +79,10 @@ class ContentReader {
             case EpubContentType.imagePng:
             case EpubContentType.imageSvg:
             case EpubContentType.imageBmp:
-              result.images![fileName] = epubByteContentFile;
+              (result.images ?? {})[fileName] = epubByteContentFile;
             case EpubContentType.fontTruetype:
             case EpubContentType.fontOpentype:
-              result.fonts![fileName] = epubByteContentFile;
+              (result.fonts ?? {})[fileName] = epubByteContentFile;
             case EpubContentType.css:
             case EpubContentType.xhtml_1_1:
             case EpubContentType.dtbook:
