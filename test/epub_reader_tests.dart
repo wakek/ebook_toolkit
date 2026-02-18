@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'package:ebook_toolkit/ebook_toolkit.dart';
 
 main() async {
-  String fileName = "stevenson-a-childs-garden-of-verses-illustrations.epub";
+  String fileName = "hittelOnGoldMines.epub";
   String fullPath = path.join(io.Directory.current.path, "test", "res", fileName);
   var targetFile = new io.File(fullPath);
   if (!(await targetFile.exists())) {
@@ -16,15 +16,15 @@ main() async {
 
   List<int> bytes = await targetFile.readAsBytes();
   test("Test Epub Ref", () async {
-    EpubBookRef epubRef = await EpubReader.openBook(bytes);
+    EpubBookRef epubRef = await EpubReader().openBook(bytes);
     var t = await epubRef.getChapters();
     print("${t.length}");
   });
   test("Test Epub Read", () async {
-    EpubBook epubRef = await EpubReader.readBook(bytes);
+    EpubBook epubRef = await EpubReader().readBook(bytes);
 
-    expect(epubRef.Author, equals("John S. Hittell"));
-    expect(epubRef.Title, equals("Hittel on Gold Mines and Mining"));
+    expect(epubRef.author, equals("John S. Hittell"));
+    expect(epubRef.title, equals("Hittel on Gold Mines and Mining"));
   });
 
   test("Test can read", () async {
@@ -36,9 +36,10 @@ main() async {
 
     await baseDir.list(recursive: false, followLinks: false).forEach((io.FileSystemEntity fe) async {
       try {
+        if (fe is! io.File || !fe.path.endsWith(".epub")) return;
         io.File tf = new io.File(fe.path);
         List<int> bytes = await tf.readAsBytes();
-        EpubBook book = await EpubReader.readBook(bytes);
+        EpubBook book = await EpubReader().readBook(bytes);
         expect(book, isNotNull);
       } catch (e) {
         print("File: ${fe.path}, Exception: ${e}");
@@ -56,9 +57,10 @@ main() async {
 
     await baseDir.list(recursive: false, followLinks: false).forEach((io.FileSystemEntity fe) async {
       try {
+        if (fe is! io.File || !fe.path.endsWith(".epub")) return;
         var tf = new io.File(fe.path);
         var bytes = await tf.readAsBytes();
-        var ref = await EpubReader.openBook(bytes);
+        var ref = await EpubReader().openBook(bytes);
         expect(ref, isNotNull);
       } catch (e) {
         print("File: ${fe.path}, Exception: ${e}");

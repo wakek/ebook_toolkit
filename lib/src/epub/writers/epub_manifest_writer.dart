@@ -16,7 +16,7 @@ class EpubManifestWriter {
     builder.element(
       'manifest',
       nest: () {
-        for (final item in manifest!.items!) {
+        for (final item in manifest?.items ?? []) {
           builder.element(
             'item',
             nest: () {

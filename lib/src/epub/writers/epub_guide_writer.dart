@@ -1,3 +1,4 @@
+import 'package:ebook_toolkit/ebook_toolkit.dart';
 import 'package:ebook_toolkit/src/epub/schema/opf/epub_guide.dart';
 import 'package:xml/xml.dart';
 
@@ -16,13 +17,13 @@ class EpubGuideWriter {
     builder.element(
       'guide',
       nest: () {
-        for (final guideItem in guide!.items!) {
+        for (final guideItem in guide?.items ?? <EpubGuideReference>[]) {
           builder.element(
             'reference',
             attributes: {
-              'type': guideItem.type!,
-              'title': guideItem.title!,
-              'href': guideItem.href!,
+              'type': guideItem.type ?? '',
+              'title': guideItem.title ?? '',
+              'href': guideItem.href ?? '',
             },
           );
         }

@@ -57,10 +57,10 @@ class PackageReader {
               );
           }
         }
-        if (guideReference.type == null || guideReference.type!.isEmpty) {
+        if (guideReference.type?.isEmpty ?? true) {
           throw Exception('Incorrect EPUB guide: item type is missing');
         }
-        if (guideReference.href == null || guideReference.href!.isEmpty) {
+        if (guideReference.href?.isEmpty ?? true) {
           throw Exception('Incorrect EPUB guide: item href is missing');
         }
         items.add(guideReference);
@@ -121,13 +121,13 @@ class PackageReader {
           }
         }
 
-        if (manifestItem.id == null || manifestItem.id!.isEmpty) {
+        if (manifestItem.id?.isEmpty ?? true) {
           throw Exception('Incorrect EPUB manifest: item ID is missing');
         }
-        if (manifestItem.href == null || manifestItem.href!.isEmpty) {
+        if (manifestItem.href?.isEmpty ?? true) {
           throw Exception('Incorrect EPUB manifest: item href is missing');
         }
-        if (manifestItem.mediaType == null || manifestItem.mediaType!.isEmpty) {
+        if (manifestItem.mediaType?.isEmpty ?? true) {
           throw Exception(
             'Incorrect EPUB manifest: item media type is missing',
           );
@@ -342,10 +342,12 @@ class PackageReader {
       content: metadataMetaNode.value,
     );
 
+    final attributes = <String, String>{};
+
     for (final metadataMetaNodeAttribute in metadataMetaNode.attributes) {
       final attributeValue = metadataMetaNodeAttribute.value;
 
-      result.attributes![metadataMetaNodeAttribute.name.local.toLowerCase()] =
+      attributes[metadataMetaNodeAttribute.name.local.toLowerCase()] =
           attributeValue;
 
       switch (metadataMetaNodeAttribute.name.local.toLowerCase()) {
@@ -364,7 +366,7 @@ class PackageReader {
       }
     }
 
-    return result;
+    return result.copyWith(attributes: attributes);
   }
 
   Future<EpubPackage> readPackage(
@@ -482,7 +484,7 @@ class PackageReader {
             idRef: idRefAttribute,
             isLinear:
                 linearAttribute == null ||
-                (linearAttribute.toLowerCase() == 'no'),
+                (linearAttribute.toLowerCase() != 'no'),
           ),
         );
       }

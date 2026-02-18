@@ -26,6 +26,6 @@ class EpubChapter extends Equatable {
 
   @override
   String toString() {
-    return 'Title: $title, Subchapter count: ${subChapters!.length}';
+    return 'Title: $title, Subchapter count: ${subChapters?.length ?? 0}';
   }
 }

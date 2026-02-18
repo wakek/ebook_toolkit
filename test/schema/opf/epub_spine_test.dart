@@ -2,8 +2,8 @@ library epubreadertest;
 
 import 'dart:math';
 
-import 'package:ebook_toolkit/src/schema/opf/epub_spine.dart';
-import 'package:ebook_toolkit/src/schema/opf/epub_spine_item_ref.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_spine.dart';
+import 'package:ebook_toolkit/src/epub/schema/opf/epub_spine_item_ref.dart';
 import 'package:test/test.dart';
 
 import '../../random_data_generator.dart';

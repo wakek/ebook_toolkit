@@ -19,12 +19,12 @@ class EpubChapterRef extends Equatable {
   final List<EpubChapterRef>? subChapters;
 
   Future<String> readHtmlContent() async {
-    return epubTextContentFileRef!.readContentAsText();
+    return epubTextContentFileRef?.readContentAsText() ?? Future.value('');
   }
 
   @override
   String toString() {
-    return 'Title: $title, Subchapter count: ${subChapters!.length}';
+    return 'Title: $title, Subchapter count: ${subChapters?.length ?? 0}';
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ebook_toolkit/ebook_toolkit.dart';
-import 'package:ebook_toolkit/ebook_toolkit_platform_interface.dart';
-import 'package:ebook_toolkit/ebook_toolkit_method_channel.dart';
+import 'package:ebook_toolkit/src/ebook_toolkit_platform_interface.dart';
+import 'package:ebook_toolkit/src/ebook_toolkit_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class MockEbookToolkitPlatform

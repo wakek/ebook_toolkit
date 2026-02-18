@@ -63,43 +63,41 @@ class EpubBook extends Equatable {
       author: ref.author,
       authorList: ref.authorList,
       schema: ref.schema,
-      content: await readContent(ref.content!),
+      content: await readContent(ref.content ?? const EpubContentRef()),
       coverImageBytes: (await ref.readCover())?.toUint8List(),
       chapters: await readChapters(await ref.getChapters()),
     );
   }
 
   static Future<EpubContent> readContent(EpubContentRef contentRef) async {
-    final result = EpubContent(
-      html: await readTextContentFiles(contentRef.html!),
-      css: await readTextContentFiles(contentRef.css!),
-      images: await readByteContentFiles(contentRef.images!),
-      fonts: await readByteContentFiles(contentRef.fonts!),
-    );
+    final html = await readTextContentFiles(contentRef.html ?? {});
+    final css = await readTextContentFiles(contentRef.css ?? {});
+    final images = await readByteContentFiles(contentRef.images ?? {});
+    final fonts = await readByteContentFiles(contentRef.fonts ?? {});
+    final allFiles = <String, EpubContentFile>{};
 
-    result.html!.forEach((String? key, EpubTextContentFile value) {
-      result.allFiles![key!] = value;
-    });
-    result.css!.forEach((String? key, EpubTextContentFile value) {
-      result.allFiles![key!] = value;
-    });
+    html.forEach((key, value) => allFiles[key] = value);
+    css.forEach((key, value) => allFiles[key] = value);
+    images.forEach((key, value) => allFiles[key] = value);
+    fonts.forEach((key, value) => allFiles[key] = value);
 
-    result.images!.forEach((String? key, EpubByteContentFile value) {
-      result.allFiles![key!] = value;
-    });
-    result.fonts!.forEach((String? key, EpubByteContentFile value) {
-      result.allFiles![key!] = value;
-    });
-
-    await Future.forEach(contentRef.allFiles!.keys, (String key) async {
-      if (!result.allFiles!.containsKey(key)) {
-        result.allFiles![key] = await readByteContentFile(
-          contentRef.allFiles![key]!,
-        );
+    await Future.forEach(contentRef.allFiles?.keys ?? <String>[],
+        (String key) async {
+      if (!allFiles.containsKey(key)) {
+        final fileRef = contentRef.allFiles?[key];
+        if (fileRef != null) {
+          allFiles[key] = await readByteContentFile(fileRef);
+        }
       }
     });
 
-    return result;
+    return EpubContent(
+      html: html,
+      css: css,
+      images: images,
+      fonts: fonts,
+      allFiles: allFiles,
+    );
   }
 
   static Future<Map<String, EpubByteContentFile>> readByteContentFiles(
@@ -108,7 +106,10 @@ class EpubBook extends Equatable {
     final result = <String, EpubByteContentFile>{};
 
     await Future.forEach(byteContentFileRefs.keys, (String key) async {
-      result[key] = await readByteContentFile(byteContentFileRefs[key]!);
+      final fileRef = byteContentFileRefs[key];
+      if (fileRef != null) {
+        result[key] = await readByteContentFile(fileRef);
+      }
     });
 
     return result;
@@ -116,12 +117,13 @@ class EpubBook extends Equatable {
 
   static Future<EpubByteContentFile> readByteContentFile(
     EpubContentFileRef contentFileRef,
-  ) async => EpubByteContentFile(
-    fileName: contentFileRef.fileName,
-    contentType: contentFileRef.contentType,
-    contentMimeType: contentFileRef.contentMimeType,
-    content: await contentFileRef.readContentAsBytes(),
-  );
+  ) async =>
+      EpubByteContentFile(
+        fileName: contentFileRef.fileName,
+        contentType: contentFileRef.contentType,
+        contentMimeType: contentFileRef.contentMimeType,
+        content: await contentFileRef.readContentAsBytes(),
+      );
 
   static Future<Map<String, EpubTextContentFile>> readTextContentFiles(
     Map<String, EpubTextContentFileRef> textContentFileRefs,
@@ -129,14 +131,15 @@ class EpubBook extends Equatable {
     final result = <String, EpubTextContentFile>{};
 
     await Future.forEach(textContentFileRefs.keys, (String key) async {
-      final EpubContentFileRef value = textContentFileRefs[key]!;
-
-      result[key] = EpubTextContentFile(
-        fileName: value.fileName,
-        contentType: value.contentType,
-        contentMimeType: value.contentMimeType,
-        content: await value.readContentAsText(),
-      );
+      final value = textContentFileRefs[key];
+      if (value != null) {
+        result[key] = EpubTextContentFile(
+          fileName: value.fileName,
+          contentType: value.contentType,
+          contentMimeType: value.contentMimeType,
+          content: await value.readContentAsText(),
+        );
+      }
     });
     return result;
   }
@@ -152,7 +155,7 @@ class EpubBook extends Equatable {
           contentFileName: chapterRef.contentFileName,
           anchor: chapterRef.anchor,
           htmlContent: await chapterRef.readHtmlContent(),
-          subChapters: await readChapters(chapterRef.subChapters!),
+          subChapters: await readChapters(chapterRef.subChapters ?? []),
         ),
       );
     });

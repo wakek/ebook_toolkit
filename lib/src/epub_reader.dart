@@ -66,17 +66,13 @@ class EpubReader {
     );
 
     return bookRef.copyWith(
-      title: bookRef.schema!.package!.metadata!.titles!.firstWhere(
-        (String name) => true,
-        orElse: () => '',
-      ),
-      authorList: bookRef.schema!.package!.metadata!.creators!
-          .map((EpubMetadataCreator creator) => creator.creator)
-          .toList(),
-      author: bookRef.schema!.package!.metadata!.creators!
-          .map((EpubMetadataCreator creator) => creator.creator)
-          .toList()
-          .join(', '),
+      title: bookRef.schema?.package?.metadata?.titles?.firstOrNull ?? '',
+      authorList: bookRef.schema?.package?.metadata?.creators
+          ?.map((EpubMetadataCreator creator) => creator.creator)
+          .toList() ?? [],
+      author: bookRef.schema?.package?.metadata?.creators
+          ?.map((EpubMetadataCreator creator) => creator.creator)
+          .join(', ') ?? '',
       content: ContentReader().parseContentMap(bookRef),
     );
   }

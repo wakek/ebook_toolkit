@@ -61,11 +61,14 @@ class MethodChannelEbookToolkit extends EbookToolkitPlatform {
     required int pageIndex,
   }) async {
     final textureId = await methodChannel.invokeMethod<int>('allocTexture');
+    if (textureId == null) {
+      throw Exception('Could not allocate texture');
+    }
 
     return PdfPageImageTexture(
       pdfDocument: await pdfDocument,
       pageIndex: pageIndex,
-      texId: textureId!,
+      texId: textureId,
     );
   }
 }

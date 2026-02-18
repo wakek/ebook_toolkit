@@ -116,16 +116,16 @@ class PDFPageImage {
 
   Future<void> dispose() async {
     _imageCached = null;
-    if (_buffer != null) {
-      await methodChannel.invokeMethod('releaseBuffer', _buffer!.address);
+    final buffer = _buffer;
+    if (buffer != null) {
+      await methodChannel.invokeMethod('releaseBuffer', buffer.address);
       _buffer = null;
     }
   }
 
   /// Create cached [Image] for the page.
   Image createImageIfNotAvailable() {
-    _imageCached ??= _decodeArgb(width, height, _pixels);
-    return _imageCached!;
+    return _imageCached ??= _decodeArgb(width, height, _pixels);
   }
 
   /// Get [Image] for the object if available; otherwise null.
@@ -146,7 +146,7 @@ class PDFPageImage {
     bool? backgroundFill,
     bool? allowAntialiasingIOS,
   }) async {
-    final obj = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+    final obj = await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
       'render',
       {
         'documentId': document.id,
@@ -160,29 +160,33 @@ class PDFPageImage {
         'backgroundFill': backgroundFill,
         'allowAntialiasingIOS': allowAntialiasingIOS,
       },
-    ))!;
-    final retWidth = obj['width'] as int;
-    final retHeight = obj['height'] as int;
+    ) ?? {};
+    final retWidth = obj['width'] as int? ?? 0;
+    final retHeight = obj['height'] as int? ?? 0;
     Pointer<Uint8>? ptr;
     final pixels =
         obj['data'] as Uint8List? ??
         () {
-          final addr = obj['addr'] as int;
-          final size = obj['size'] as int;
-          ptr = Pointer<Uint8>.fromAddress(addr);
-          return ptr!.asTypedList(size);
+          final addr = obj['addr'] as int?;
+          final size = obj['size'] as int?;
+          if (addr == null || size == null) {
+            return Uint8List(0);
+          }
+          final p = Pointer<Uint8>.fromAddress(addr);
+          ptr = p;
+          return p.asTypedList(size);
         }();
 
     return PDFPageImage(
-      pageIndex: obj['pageIndex'] as int,
-      x: obj['x'] as int,
-      y: obj['y'] as int,
+      pageIndex: obj['pageIndex'] as int? ?? 0,
+      x: obj['x'] as int? ?? 0,
+      y: obj['y'] as int? ?? 0,
       width: retWidth,
       height: retHeight,
-      fullWidth: obj['fullWidth'] as double,
-      fullHeight: obj['fullHeight'] as double,
-      pageWidth: obj['pageWidth'] as double,
-      pageHeight: obj['pageHeight'] as double,
+      fullWidth: obj['fullWidth'] as double? ?? 0.0,
+      fullHeight: obj['fullHeight'] as double? ?? 0.0,
+      pageWidth: obj['pageWidth'] as double? ?? 0.0,
+      pageHeight: obj['pageHeight'] as double? ?? 0.0,
       pixels: pixels,
       buffer: ptr,
     );
@@ -255,7 +259,7 @@ class PdfPageImageTexture extends Equatable {
     bool backgroundFill = true,
     bool allowAntialiasingIOS = true,
   }) async {
-    final result = (await methodChannel.invokeMethod<int>('updateTexture', {
+    final result = await methodChannel.invokeMethod<int>('updateTexture', {
       'documentId': _document.id,
       'pageIndex': pageIndex,
       'texId': texId,
@@ -267,7 +271,7 @@ class PdfPageImageTexture extends Equatable {
       'fullHeight': fullHeight,
       'backgroundFill': backgroundFill,
       'allowAntialiasingIOS': allowAntialiasingIOS,
-    }))!;
+    }) ?? -1;
     if (result >= 0) {
       _texWidth = width;
       _texHeight = height;

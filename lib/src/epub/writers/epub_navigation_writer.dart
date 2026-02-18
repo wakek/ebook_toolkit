@@ -1,3 +1,4 @@
+import 'package:ebook_toolkit/ebook_toolkit.dart';
 import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation.dart';
 import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_doc_title.dart';
 import 'package:ebook_toolkit/src/epub/schema/navigation/epub_navigation_head.dart';
@@ -31,9 +32,18 @@ class EpubNavigationWriter {
       nest: () {
         builder.namespace(_namespace);
 
-        writeNavigationHead(builder, navigation.head!);
-        writeNavigationDocTitle(builder, navigation.docTitle!);
-        writeNavigationMap(builder, navigation.navMap!);
+        final head = navigation.head;
+        if (head != null) {
+          writeNavigationHead(builder, head);
+        }
+        final docTitle = navigation.docTitle;
+        if (docTitle != null) {
+          writeNavigationDocTitle(builder, docTitle);
+        }
+        final navMap = navigation.navMap;
+        if (navMap != null) {
+          writeNavigationMap(builder, navMap);
+        }
       },
     );
 
@@ -47,7 +57,7 @@ class EpubNavigationWriter {
     builder.element(
       'docTitle',
       nest: () {
-        title.titles!.forEach(builder.text);
+        title.titles?.forEach(builder.text);
       },
     );
   }
@@ -56,10 +66,13 @@ class EpubNavigationWriter {
     builder.element(
       'head',
       nest: () {
-        for (final item in head.metadata!) {
+        for (final item in head.metadata ?? <EpubNavigationHeadMeta>[]) {
           builder.element(
             'meta',
-            attributes: {'content': item.content!, 'name': item.name!},
+            attributes: {
+              'content': item.content ?? '',
+              'name': item.name ?? '',
+            },
           );
         }
       },
@@ -70,7 +83,7 @@ class EpubNavigationWriter {
     builder.element(
       'navMap',
       nest: () {
-        for (final item in map.points!) {
+        for (final item in map.points ?? <EpubNavigationPoint>[]) {
           writeNavigationPoint(builder, item);
         }
       },
@@ -84,24 +97,26 @@ class EpubNavigationWriter {
     builder.element(
       'navPoint',
       attributes: {
-        'id': point.id!,
-        'playOrder': point.playOrder!,
+        'id': point.id ?? '',
+        'playOrder': point.playOrder ?? '',
       },
       nest: () {
-        for (final element in point.navigationLabels!) {
+        for (final element in point.navigationLabels ?? <EpubNavigationLabel>[]) {
           builder.element(
             'navLabel',
             nest: () {
               builder.element(
                 'text',
                 nest: () {
-                  builder.text(element.text!);
+                  builder.text(element.text ?? '');
                 },
               );
             },
           );
         }
-        builder.element('content', attributes: {'src': point.content!.source!});
+        builder.element('content', attributes: {
+          'src': point.content?.source ?? '',
+        });
       },
     );
   }

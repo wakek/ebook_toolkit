@@ -31,11 +31,19 @@ abstract class EpubContentFileRef extends Equatable {
   ];
 
   ArchiveFile getContentFileEntry() {
+    final schema = epubBookRef.schema;
+    if (schema == null) {
+      throw Exception('EPUB parsing error: schema is missing.');
+    }
     final contentFilePath = ZipPathUtils.combine(
-      epubBookRef.schema!.contentDirectoryPath,
+      schema.contentDirectoryPath,
       fileName,
     );
-    final contentFileEntry = epubBookRef.epubArchive!.files.firstWhereOrNull(
+    final archive = epubBookRef.epubArchive;
+    if (archive == null) {
+      throw Exception('EPUB parsing error: archive is missing.');
+    }
+    final contentFileEntry = archive.files.firstWhereOrNull(
       (ArchiveFile x) => x.name == contentFilePath,
     );
     if (contentFileEntry == null) {

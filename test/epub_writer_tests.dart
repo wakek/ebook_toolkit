@@ -2,7 +2,7 @@ library epubreadertest;
 
 import 'dart:io' as io;
 
-import 'package:ebook_toolkit/epub.dart';
+import 'package:ebook_toolkit/ebook_toolkit.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -18,10 +18,11 @@ main() async {
   List<int> bytes = await targetFile.readAsBytes();
 
   test("Book Round Trip", () async {
-    EpubBook book = await EpubReader.readBook(bytes);
+    EpubBook book = await EpubReader().readBook(bytes);
 
-    var written = await EpubWriter.writeBook(book);
-    var bookRoundTrip = await EpubReader.readBook(written);
+    var written = EpubWriter().writeBook(book);
+    expect(written, isNotNull);
+    var bookRoundTrip = await EpubReader().readBook(written!);
 
     expect(bookRoundTrip, equals(book));
   });

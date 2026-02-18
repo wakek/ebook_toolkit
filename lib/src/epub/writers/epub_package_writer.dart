@@ -37,7 +37,7 @@ class EpubPackageWriter {
           package.version,
         );
         EpubManifestWriter.instance.writeManifest(builder, package.manifest);
-        EpubSpineWriter.instance.writeSpine(builder, package.spine!);
+        EpubSpineWriter.instance.writeSpine(builder, package.spine);
         EpubGuideWriter.instance.writeGuide(builder, package.guide);
       },
     );

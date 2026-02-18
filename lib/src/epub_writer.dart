@@ -41,37 +41,53 @@ class EpubWriter {
         ),
       );
 
+    final contentDirectoryPath = book.schema?.contentDirectoryPath;
+
     // Add all content to the archive
-    book.content!.allFiles!.forEach((name, file) {
+    book.content?.allFiles?.forEach((name, file) {
       List<int>? content;
 
       if (file is EpubByteContentFile) {
         content = file.content;
       } else if (file is EpubTextContentFile) {
-        content = convert.utf8.encode(file.content!);
+        final textContent = file.content;
+        if (textContent != null) {
+          content = convert.utf8.encode(textContent);
+        }
       }
 
-      arch.addFile(
-        ArchiveFile(
-          ZipPathUtils.combine(book.schema!.contentDirectoryPath, name)!,
-          content!.length,
-          content,
-        ),
-      );
+      if (content != null) {
+        final filePath = ZipPathUtils.combine(contentDirectoryPath, name);
+        if (filePath != null) {
+          arch.addFile(
+            ArchiveFile(
+              filePath,
+              content.length,
+              content,
+            ),
+          );
+        }
+      }
     });
 
     // Generate the content.opf file and add it to the Archive
-    final contentopf = EpubPackageWriter.instance.writeContent(
-      book.schema!.package!,
-    );
+    final package = book.schema?.package;
+    if (package != null) {
+      final contentopf = EpubPackageWriter.instance.writeContent(
+        package,
+      );
 
-    arch.addFile(
-      ArchiveFile(
-        ZipPathUtils.combine(book.schema!.contentDirectoryPath, 'content.opf')!,
-        contentopf.length,
-        convert.utf8.encode(contentopf),
-      ),
-    );
+      final opfPath = ZipPathUtils.combine(contentDirectoryPath, 'content.opf');
+      if (opfPath != null) {
+        arch.addFile(
+          ArchiveFile(
+            opfPath,
+            contentopf.length,
+            convert.utf8.encode(contentopf),
+          ),
+        );
+      }
+    }
 
     return arch;
   }

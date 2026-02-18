@@ -1,6 +1,8 @@
+import 'package:ebook_toolkit/ebook_toolkit.dart';
 import 'package:ebook_toolkit/src/epub/entities/epub_content_type.dart';
 import 'package:ebook_toolkit/src/epub/ref_entities/epub_book_ref.dart';
 import 'package:ebook_toolkit/src/epub/ref_entities/epub_byte_content_file_ref.dart';
+import 'package:ebook_toolkit/src/epub/ref_entities/epub_content_file_ref.dart';
 import 'package:ebook_toolkit/src/epub/ref_entities/epub_content_ref.dart';
 import 'package:ebook_toolkit/src/epub/ref_entities/epub_text_content_file_ref.dart';
 
@@ -16,20 +18,25 @@ class ContentReader {
   static ContentReader get instance => _singleton;
 
   EpubContentRef parseContentMap(EpubBookRef bookRef) {
-    const result = EpubContentRef();
+    final html = <String, EpubTextContentFileRef>{};
+    final css = <String, EpubTextContentFileRef>{};
+    final images = <String, EpubByteContentFileRef>{};
+    final fonts = <String, EpubByteContentFileRef>{};
+    final allFiles = <String, EpubContentFileRef>{};
 
-    for (final manifestItem in bookRef.schema!.package!.manifest!.items!) {
+    for (final manifestItem
+        in bookRef.schema?.package?.manifest?.items ?? <EpubManifestItem>[]) {
       final fileName = Uri.decodeFull(manifestItem.href ?? '');
-      final contentMimeType = manifestItem.mediaType!;
+      final contentMimeType = manifestItem.mediaType ?? '';
       final contentType = getContentTypeByContentMimeType(contentMimeType);
       switch (contentType) {
-        case .xhtml_1_1:
-        case .css:
-        case .oeb1Document:
-        case .oeb1Css:
-        case .xml:
-        case .dtbook:
-        case .dtbookNcx:
+        case EpubContentType.xhtml_1_1:
+        case EpubContentType.css:
+        case EpubContentType.oeb1Document:
+        case EpubContentType.oeb1Css:
+        case EpubContentType.xml:
+        case EpubContentType.dtbook:
+        case EpubContentType.dtbookNcx:
           final epubTextContentFile = EpubTextContentFileRef(
             epubBookRef: bookRef,
             fileName: fileName,
@@ -39,33 +46,33 @@ class ContentReader {
 
           switch (contentType) {
             case EpubContentType.xhtml_1_1:
-              (result.html ?? {})[fileName] = epubTextContentFile;
+              html[fileName] = epubTextContentFile;
             case EpubContentType.css:
-              (result.css ?? {})[fileName] = epubTextContentFile;
-            case EpubContentType.dtbook:
-            case EpubContentType.dtbookNcx:
-            case EpubContentType.oeb1Document:
-            case EpubContentType.xml:
-            case EpubContentType.oeb1Css:
-            case EpubContentType.imageGif:
-            case EpubContentType.imageJpeg:
-            case EpubContentType.imagePng:
-            case EpubContentType.imageSvg:
-            case EpubContentType.imageBmp:
-            case EpubContentType.fontTruetype:
-            case EpubContentType.fontOpentype:
-            case EpubContentType.other:
+              css[fileName] = epubTextContentFile;
+            case .dtbook:
+            case .dtbookNcx:
+            case .oeb1Document:
+            case .xml:
+            case .oeb1Css:
+            case .imageGif:
+            case .imageJpeg:
+            case .imagePng:
+            case .imageSvg:
+            case .imageBmp:
+            case .fontTruetype:
+            case .fontOpentype:
+            case .other:
               break;
           }
-          result.allFiles![fileName] = epubTextContentFile;
-        case .fontOpentype:
-        case .imageGif:
-        case .imageJpeg:
-        case .imagePng:
-        case .imageSvg:
-        case .imageBmp:
-        case .fontTruetype:
-        case .other:
+          allFiles[fileName] = epubTextContentFile;
+        case EpubContentType.fontOpentype:
+        case EpubContentType.imageGif:
+        case EpubContentType.imageJpeg:
+        case EpubContentType.imagePng:
+        case EpubContentType.imageSvg:
+        case EpubContentType.imageBmp:
+        case EpubContentType.fontTruetype:
+        case EpubContentType.other:
           final epubByteContentFile = EpubByteContentFileRef(
             epubBookRef: bookRef,
             fileName: fileName,
@@ -74,29 +81,36 @@ class ContentReader {
           );
 
           switch (contentType) {
-            case EpubContentType.imageGif:
-            case EpubContentType.imageJpeg:
-            case EpubContentType.imagePng:
-            case EpubContentType.imageSvg:
-            case EpubContentType.imageBmp:
-              (result.images ?? {})[fileName] = epubByteContentFile;
-            case EpubContentType.fontTruetype:
-            case EpubContentType.fontOpentype:
-              (result.fonts ?? {})[fileName] = epubByteContentFile;
-            case EpubContentType.css:
-            case EpubContentType.xhtml_1_1:
-            case EpubContentType.dtbook:
-            case EpubContentType.dtbookNcx:
-            case EpubContentType.oeb1Document:
-            case EpubContentType.xml:
-            case EpubContentType.oeb1Css:
-            case EpubContentType.other:
+            case .imageGif:
+            case .imageJpeg:
+            case .imagePng:
+            case .imageSvg:
+            case .imageBmp:
+              images[fileName] = epubByteContentFile;
+            case .fontTruetype:
+            case .fontOpentype:
+              fonts[fileName] = epubByteContentFile;
+            case .xhtml_1_1:
+            case .dtbook:
+            case .dtbookNcx:
+            case .oeb1Document:
+            case .xml:
+            case .css:
+            case .oeb1Css:
+            case .other:
               break;
           }
-          result.allFiles![fileName] = epubByteContentFile;
+          allFiles[fileName] = epubByteContentFile;
       }
     }
-    return result;
+
+    return EpubContentRef(
+      html: html,
+      css: css,
+      images: images,
+      fonts: fonts,
+      allFiles: allFiles,
+    );
   }
 
   EpubContentType getContentTypeByContentMimeType(

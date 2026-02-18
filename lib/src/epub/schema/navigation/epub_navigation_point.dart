@@ -31,7 +31,7 @@ class EpubNavigationPoint extends Equatable {
 
   @override
   String toString() {
-    return 'Id: $id, Content.Source: ${content!.source}';
+    return 'Id: $id, Content.Source: ${content?.source}';
   }
 
   EpubNavigationPoint copyWith({

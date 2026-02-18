@@ -1,6 +1,6 @@
 library epubreadertest;
 
-import 'package:ebook_toolkit/epub.dart';
+import 'package:ebook_toolkit/ebook_toolkit.dart';
 import 'package:test/test.dart';
 
 main() async {

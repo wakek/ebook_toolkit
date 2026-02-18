@@ -19,9 +19,12 @@ class SchemaReader {
   static SchemaReader get instance => _singleton;
 
   Future<EpubSchema> readSchema(Archive epubArchive) async {
-    final rootFilePath = (await RootFilePathReader().getRootFilePath(
+    final rootFilePath = await RootFilePathReader().getRootFilePath(
       epubArchive,
-    ))!;
+    );
+    if (rootFilePath == null) {
+      throw Exception('EPUB parsing error: root file path not found.');
+    }
 
     final contentDirectoryPath = ZipPathUtils.instance.getDirectoryPath(
       rootFilePath,

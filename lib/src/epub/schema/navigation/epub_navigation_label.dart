@@ -14,6 +14,6 @@ class EpubNavigationLabel extends Equatable {
 
   @override
   String toString() {
-    return text!;
+    return text ?? '';
   }
 }

@@ -13,7 +13,7 @@ class EpubSpine extends Equatable {
   final bool? ltr;
 
   @override
-  List<Object?> get props => [tableOfContents, ltr, ...items!];
+  List<Object?> get props => [tableOfContents, ltr, ...items ?? []];
 
   EpubSpine copyWith({
     String? tableOfContents,

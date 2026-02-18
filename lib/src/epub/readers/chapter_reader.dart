@@ -15,12 +15,12 @@ class ChapterReader {
   static ChapterReader get instance => _singleton;
 
   static List<EpubChapterRef> getChapters(EpubBookRef bookRef) {
-    if (bookRef.schema!.navigation == null) {
+    if (bookRef.schema?.navigation == null) {
       return <EpubChapterRef>[];
     }
     return getChaptersImpl(
       bookRef,
-      bookRef.schema!.navigation!.navMap!.points!,
+      bookRef.schema?.navigation?.navMap?.points ?? [],
     );
   }
 
@@ -32,40 +32,40 @@ class ChapterReader {
     for (final navigationPoint in navigationPoints) {
       String? contentFileName;
       String? anchor;
-      if (navigationPoint.content?.source == null) {
+      final source = navigationPoint.content?.source;
+      if (source == null) {
         continue;
       }
 
-      final contentSourceAnchorCharIndex = navigationPoint.content!.source!
-          .indexOf('#');
+      final contentSourceAnchorCharIndex = source.indexOf('#');
 
       if (contentSourceAnchorCharIndex == -1) {
-        contentFileName = navigationPoint.content!.source;
-        anchor = navigationPoint.content!.source;
+        contentFileName = source;
+        anchor = source;
       } else {
-        contentFileName = navigationPoint.content!.source!.substring(
+        contentFileName = source.substring(
           0,
           contentSourceAnchorCharIndex,
         );
-        anchor = navigationPoint.content!.source;
+        anchor = source;
       }
-      contentFileName = Uri.decodeFull(contentFileName!);
+      contentFileName = Uri.decodeFull(contentFileName);
       EpubTextContentFileRef? htmlContentFileRef;
-      if (!bookRef.content!.html!.containsKey(contentFileName)) {
+      if (!(bookRef.content?.html?.containsKey(contentFileName) ?? false)) {
         continue;
       }
 
-      htmlContentFileRef = bookRef.content!.html![contentFileName];
+      htmlContentFileRef = bookRef.content?.html?[contentFileName];
 
       result.add(
         EpubChapterRef(
           epubTextContentFileRef: htmlContentFileRef,
-          title: navigationPoint.navigationLabels!.first.text,
+          title: navigationPoint.navigationLabels?.firstOrNull?.text,
           contentFileName: contentFileName,
-          anchor: Uri.decodeFull(anchor ?? ''),
+          anchor: Uri.decodeFull(anchor),
           subChapters: getChaptersImpl(
             bookRef,
-            navigationPoint.childNavigationPoints!,
+            navigationPoint.childNavigationPoints ?? [],
           ),
         ),
       );

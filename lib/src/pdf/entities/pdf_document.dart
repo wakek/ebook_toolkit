@@ -60,16 +60,16 @@ class PdfDocument extends Equatable {
       return page;
     }
 
-    final map = (await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
+    final map = await methodChannel.invokeMethod<Map<dynamic, dynamic>>(
       'getPageInfo',
       {'documentId': id, 'pageIndex': pageIndex},
-    ))!;
+    ) ?? {};
 
     page = PdfPage(
       document: this,
       pageIndex: pageIndex,
-      width: map['width'] as double,
-      height: map['height'] as double,
+      width: (map['width'] as num?)?.toDouble() ?? 0.0,
+      height: (map['height'] as num?)?.toDouble() ?? 0.0,
     );
     pages[pageIndex] = page;
 
